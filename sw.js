@@ -1,5 +1,5 @@
 /* Service Worker: offline primero; sin solicitudes a servicios externos. */
-const CACHE_VERSION = 'goldtrading-offline-v1';
+const CACHE_VERSION = 'goldtrading-offline-v2';
 const OFFLINE_FILES = [
   './', './index.html', './styles.css', './math.js', './app.js',
   './manifest.webmanifest', './icons/icon-192.png', './icons/icon-512.png',
