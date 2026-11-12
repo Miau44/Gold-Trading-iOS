@@ -1,5 +1,5 @@
 /* Gold Trading v5: todos los recursos de la calculadora se cargan localmente. */
-const CACHE_VERSION = 'goldtrading-offline-v5';
+const CACHE_VERSION = 'goldtrading-offline-v6';
 const OFFLINE_FILES = [
   './', './index.html', './styles.css', './math.js', './app.js',
   './images/results-gold.png', './manifest.webmanifest', './icons/icon-192.png', './icons/icon-512.png',
@@ -7,7 +7,7 @@ const OFFLINE_FILES = [
 ];
 self.addEventListener('install', event => {
   event.waitUntil(caches.open(CACHE_VERSION)
-    .then(cache => cache.addAll(OFFLINE_FILES))
+    .then(cache => cache.addAll(OFFLINE_FILES.map(file => new Request(file, {cache:'reload'}))))
     .then(() => self.skipWaiting()));
 });
 self.addEventListener('activate', event => {
@@ -21,9 +21,9 @@ self.addEventListener('fetch', event => {
   if (request.method !== 'GET') return;
   const url = new URL(request.url);
   if (url.origin !== self.location.origin) return;
-  event.respondWith(caches.match(request, {ignoreSearch:true}).then(cached => {
+  event.respondWith(caches.open(CACHE_VERSION).then(cache => cache.match(request, {ignoreSearch:true}).then(cached => {
     if (cached) return cached;
-    if (request.mode === 'navigate') return caches.match('./index.html').then(index => index || fetch(request));
+    if (request.mode === 'navigate') return cache.match('./index.html').then(index => index || fetch(request));
     return fetch(request);
-  }));
+  })));
 });

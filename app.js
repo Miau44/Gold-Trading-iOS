@@ -291,6 +291,23 @@
       console.warn('[Gold Trading] Error de persistencia:', err);
     }
   }
+  async function refreshOfflineStatus() {
+    const required = [
+      './', './index.html', './styles.css', './math.js', './app.js',
+      './images/results-gold.png', './manifest.webmanifest',
+      './icons/icon-192.png', './icons/icon-512.png', './icons/apple-touch-icon.png'
+    ];
+    const cacheName = 'goldtrading-offline-v6';
+    if (!(await caches.keys()).includes(cacheName)) {
+      $('offline-status').textContent = 'Descarga inicial pendiente';
+      return false;
+    }
+    const cache = await caches.open(cacheName);
+    const found = await Promise.all(required.map(path => cache.match(new URL(path, document.baseURI))));
+    const complete = found.every(response => response && response.ok);
+    $('offline-status').textContent = complete ? 'Archivos preparados' : 'Descarga inicial pendiente';
+    return complete;
+  }
   async function prepareOffline() {
     const target = $('offline-status');
     if (!('serviceWorker' in navigator) || !window.isSecureContext) {
@@ -298,18 +315,36 @@
       await checkStoragePersistence();
       return;
     }
+    // La persistencia no depende de que haya red ni de que termine el registro.
+    const persistence = checkStoragePersistence();
     try {
-      await navigator.serviceWorker.register('./sw.js', {scope:'./'});
-      await navigator.serviceWorker.ready;
-      const cache = await caches.open('goldtrading-offline-v5');
-      const required = ['./index.html','./styles.css','./math.js','./app.js','./images/results-gold.png'];
-      const found = await Promise.all(required.map(path => cache.match(new URL(path, document.baseURI))));
-      target.textContent = found.every(Boolean) ? 'Archivos preparados' : 'Descarga inicial pendiente';
+      await navigator.serviceWorker.register('./sw.js', {scope:'./', updateViaCache:'none'});
+      // Una instalación fallida no debe dejar el diagnóstico esperando indefinidamente.
+      let readyTimeout;
+      try {
+        await Promise.race([
+          navigator.serviceWorker.ready,
+          new Promise((_, reject) => {
+            readyTimeout = setTimeout(() => reject(new Error('La preparación offline no terminó.')), 15000);
+          })
+        ]);
+      } finally { clearTimeout(readyTimeout); }
+      await refreshOfflineStatus();
     } catch (err) {
-      target.textContent = 'No se pudo preparar';
+      // Una comprobación de actualización puede fallar sin conexión aunque la app ya esté preparada.
+      try {
+        if (!await refreshOfflineStatus()) target.textContent = 'No se pudo preparar';
+      } catch (_) { target.textContent = 'No se pudo preparar'; }
       console.warn('[Gold Trading] Offline:', err);
     }
-    await checkStoragePersistence();
+    await persistence;
   }
   window.addEventListener('load', prepareOffline);
+  window.addEventListener('online', prepareOffline);
+  window.addEventListener('pageshow', event => { if (event.persisted) prepareOffline(); });
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.addEventListener('controllerchange', () => {
+      refreshOfflineStatus().catch(() => { $('offline-status').textContent = 'No se pudo preparar'; });
+    });
+  }
 })();
