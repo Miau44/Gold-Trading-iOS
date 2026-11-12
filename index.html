@@ -19,19 +19,19 @@
 </head>
 <body>
   <main id="auth-view" class="auth-shell">
-    <header class="masthead auth-brand">
-      <img class="brand-logo" src="./icons/icon-192.png" alt="" width="56" height="56">
-      <div class="brand-copy"><p class="brand-name">GOLD TRADING</p><p class="brand-detail">Calculadora de tasación</p></div>
-      <span class="decorative-dot" aria-hidden="true"></span>
+    <header class="auth-brand" aria-label="Gold Trading - Calculadora de tasación">
+      <div class="auth-monogram" aria-hidden="true">GT</div>
+      <p class="auth-wordmark">GOLD TRADING</p>
+      <p class="auth-tagline">Calculadora de tasación</p>
+      <span class="auth-rule" aria-hidden="true"></span>
     </header>
     <section class="auth-card" aria-labelledby="login-title">
-      <div class="auth-symbol" aria-hidden="true">GT</div>
       <p class="eyebrow">ACCESO A GOLD TRADING</p>
       <h1 id="login-title">Iniciar sesión</h1>
       <p class="auth-description">Ingresa tus credenciales para abrir la calculadora.</p>
       <form id="login-form" novalidate>
-        <div class="field"><label for="username">USUARIO</label><div class="input-wrap"><input id="username" name="username" type="text" autocomplete="username" autocapitalize="off" spellcheck="false" placeholder="Usuario" required></div></div>
-        <div class="field"><label for="password">CONTRASEÑA</label><div class="input-wrap"><input id="password" name="password" type="password" autocomplete="current-password" placeholder="Contraseña" required></div></div>
+        <div class="field"><label for="username">Usuario</label><div class="input-wrap"><input id="username" name="username" type="text" autocomplete="username" autocapitalize="off" spellcheck="false" placeholder="Usuario" required></div></div>
+        <div class="field"><label for="password">Contraseña</label><div class="input-wrap"><input id="password" name="password" type="password" autocomplete="current-password" placeholder="Contraseña" required></div></div>
         <p class="form-error" id="login-error" role="alert" hidden></p>
         <button type="submit" id="login-btn" class="primary-btn full-btn">INGRESAR</button>
       </form>
@@ -41,20 +41,20 @@
 
   <main id="app-view" class="app-shell" hidden>
     <header class="masthead">
-      <img class="brand-logo" src="./icons/icon-192.png" alt="" width="56" height="56">
+      <span class="brand-emblem"><img class="brand-logo" src="./icons/icon-192.png" alt="" width="56" height="56"></span>
       <div class="brand-copy"><p class="brand-name">GOLD TRADING</p><p class="brand-detail">Calculadora de tasación</p></div>
       <span class="decorative-dot" aria-hidden="true"></span>
     </header>
     <nav class="tab-bar" aria-label="Secciones">
-      <button type="button" id="nav-calculator" class="tab active" aria-current="page">Calculadora</button>
-      <button type="button" id="nav-settings" class="tab">Preferencias</button>
+      <button type="button" id="nav-calculator" class="tab active" aria-current="page"><svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="2.7" width="16" height="18.6" rx="3"/><path d="M7.5 7.7h9M8.4 11.8h1M14.6 11.8h1M8.4 16.6h1M14.6 16.6h1"/></svg><span>Calculadora</span></button>
+      <button type="button" id="nav-settings" class="tab"><svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15.4 21 16.7l-1.5 2.7-2-.7a8.3 8.3 0 0 1-2.2 1.3L15 22h-3l-.4-2a8.3 8.3 0 0 1-2.2-1.3l-2 .7L5.9 16.7l1.6-1.3a8.6 8.6 0 0 1 0-2.8L5.9 11.3l1.5-2.7 2 .7a8.3 8.3 0 0 1 2.2-1.3L12 6h3l.4 2a8.3 8.3 0 0 1 2.2 1.3l2-.7 1.5 2.7-1.6 1.3a8.6 8.6 0 0 1 0 2.8Z" transform="translate(-1.5 -2) scale(1.05)"/></svg><span>Preferencias</span></button>
     </nav>
 
     <div id="calculator-view">
       <section class="calculator-card" aria-labelledby="calculator-heading">
         <div class="section-heading">
           <div><p class="eyebrow">TASACIÓN DE ORO</p><h1 id="calculator-heading">Calculadora</h1></div>
-          <span class="gold-bar" aria-hidden="true"></span>
+          <span class="section-icon" aria-hidden="true"><svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v18M6 21h12M4 7h16M6 7 3 13h6L6 7Zm12 0-3 6h6l-3-6ZM12 3a2 2 0 1 0 0 4"/></svg></span>
         </div>
         <form id="calculator-form" novalidate>
           <div class="form-grid">
@@ -64,7 +64,7 @@
             <div class="field"><label for="ley">LEY (50–99.99)</label><div class="input-wrap"><input id="ley" name="ley" type="text" inputmode="decimal" autocomplete="off" aria-describedby="form-error"></div></div>
           </div>
           <p class="form-error" id="form-error" role="alert" hidden></p>
-          <div class="button-row"><button class="calculate-btn" type="submit">CALCULAR</button><button class="reset-btn" type="button" id="reset-btn">LIMPIAR</button></div>
+          <div class="button-row"><button class="calculate-btn" type="submit"><svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="2.5" width="14" height="19" rx="2.5"/><path d="M8 6h8v3H8zM8.5 13h1M14.5 13h1M8.5 17.5h1M14.5 17.5h1"/></svg><span>CALCULAR</span></button><button class="reset-btn" type="button" id="reset-btn"><svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 9a8 8 0 0 0-14-2.3L3.5 9.3M3.5 4.8v4.5H8M4 15a8 8 0 0 0 14 2.3l2.5-2.6M20.5 19.2v-4.5H16"/></svg><span>LIMPIAR</span></button></div>
         </form>
       </section>
 
@@ -78,8 +78,8 @@
 
       <section class="reference-card" aria-labelledby="reference-heading">
         <div class="section-heading reference-heading">
-          <div><p class="eyebrow">TABLA DE COTIZACIÓN</p><h2 id="reference-heading">Calculadora por ley</h2><p class="reference-description">Precios por gramo · leyes del 99 al 50</p></div>
-          <span class="gold-bar" aria-hidden="true"></span>
+          <div><p class="eyebrow">TABLA DE COTIZACIÓN</p><h2 id="reference-heading">Calculadora por ley</h2><span class="reference-underline" aria-hidden="true"></span><p class="reference-description">Precios por gramo · leyes del 99 al 50</p></div>
+          <span class="section-icon" aria-hidden="true"><svg class="ui-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="3.5" y="13" width="4.4" height="7" rx=".7"/><rect x="9.8" y="9" width="4.4" height="11" rx=".7"/><rect x="16.1" y="4" width="4.4" height="16" rx=".7"/></svg></span>
         </div>
         <form id="reference-form" novalidate>
           <div class="form-grid reference-input-grid">
@@ -129,7 +129,7 @@
         <button id="logout-btn" type="button" class="logout-btn">CERRAR SESIÓN</button>
       </section>
     </div>
-    <footer class="footer">GOLD TRADING · CÁLCULOS LOCALES</footer>
+    <footer class="footer app-footer"><span class="footer-rule" aria-hidden="true"></span><span class="footer-copy"><strong>GOLD TRADING</strong><small>CÁLCULOS LOCALES</small></span><span class="footer-rule" aria-hidden="true"></span></footer>
   </main>
 </body>
 </html>
