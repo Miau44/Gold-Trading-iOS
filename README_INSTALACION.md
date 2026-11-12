@@ -1,49 +1,55 @@
-# Gold Trading PWA v3 - Calculadora Windows adaptada para iPhone
+# Gold Trading PWA v5 - Rediseño premium iPhone 17 Pro Max
 
-La versión actual contiene exactamente las funciones necesarias para el cliente:
-- Inicio de sesión con usuario y contraseña local.
-- Calculadora principal de precio por gramo (onza, porcentaje, dólar, ley).
-- Segunda calculadora independiente con los precios de todas las leyes 99-50, sin descuento en los importes de referencia como en Windows.
-- Preferencias de valores predeterminados.
-- Cambio de contraseña desde Preferencias y cierre de sesión.
+Esta entrega parte **directamente de Gold Trading PWA v4**. El rediseño actualiza la presentación de la pantalla posterior al inicio de sesión: encabezado, navegación, tarjetas de calculadoras, tarjeta de resultados, tablas 99–50 y pie de página. La pantalla de inicio de sesión y el contenido de Preferencias no se modificaron.
 
-**No incluye:** peso de piezas, cálculo de total por peso, registros de compras/ventas, historial, consultas por internet, servidor de cálculo ni base de datos.
+## Cambios visuales
 
-## Credenciales de la primera instalación
+- Estilo premium azul medianoche, gris perla y dorado; tarjetas claras, sombras suaves y navegación segmentada.
+- Campos de las calculadoras con valores grandes y botones más fáciles de tocar.
+- Resultados con un valor principal de ~44–50 px y el fondo local `images/results-gold.png`, que reemplaza los lingotes SVG anteriores y se adapta a la tarjeta con `background-size: cover`. Una capa oscura suave ayuda a mantener el contraste del texto.
+- Tablas agrupadas en 99–90, 89–80, 79–70, 69–60 y 59–50, de dos en dos en pantallas móviles. Los precios se muestran a 18 px en el tamaño de referencia (440 CSS px), con 17 px en pantallas más estrechas; en pantallas excepcionalmente pequeñas se ajustan para evitar cortes.
+- Se utilizan fuentes del sistema: no hay dependencias de red para fuentes, gráficos o cálculos.
 
-- Usuario inicial: `admin`
-- Contraseña inicial: `admin123`
+## Archivos y funcionamiento
 
-Estas son las credenciales predeterminadas encontradas en el ejecutable original de Windows. **Se recomienda cambiar la contraseña** en Preferencias después del primer acceso. La contraseña se guarda como un verificador PBKDF2-SHA256 con sal aleatoria en el almacenamiento del navegador, no en texto plano. Esto es un bloqueo local de uso individual y **no equivale a seguridad de autenticación con servidor**. Si se borran los datos de la PWA, las credenciales y las preferencias vuelven a su estado inicial. La contraseña configurada en otra instalación, incluido Windows, no se importa automáticamente.
+- `app.js`: conserva cálculos, navegación y autenticación; comprueba la caché v5 e incluye la imagen entre los recursos necesarios para el estado offline.
+- `math.js`: fórmulas, redondeo, rangos de ley y tabla con las 50 leyes.
+- `sw.js`: caché `goldtrading-offline-v5`, con la nueva imagen precargada. Conserva la estrategia `cache-first` y elimina las cachés antiguas de Gold Trading al activarse.
+- `manifest.webmanifest`: instalación PWA `standalone` **sin modificaciones**.
+- `icons/`: iconos originales **sin modificaciones**.
 
-## Cómo probar en Windows (sin Mac)
+El diseño se encuentra en `index.html` y `styles.css`; el fondo está en `images/`. También se actualizaron la caché, su diagnóstico y las pruebas correspondientes. No se añadieron ventas, historial, registros, consultas, base de datos ni campos nuevos.
 
-1. Descomprimir todo el ZIP en una carpeta.
-2. Para revisar solo la interfaz y los cálculos, abrir `index.html` en un navegador compatible.
-3. Para probar instalación PWA y caché offline, servir la carpeta por HTTP en `localhost`, por ejemplo:
-   `python -m http.server 8080`
-4. Abrir `http://localhost:8080`, iniciar sesión y comprobar las dos calculadoras y Preferencias.
+## Credenciales iniciales (si es una instalación nueva)
 
-## Instalación en iPhone (requiere HTTPS una vez)
+- Usuario: `admin`
+- Contraseña: `admin123`
 
-1. Publicar **todos** los archivos de esta carpeta (manteniendo rutas) en un alojamiento estático HTTPS.
-2. En el iPhone, abrir la dirección HTTPS **en Safari** con internet.
-3. Compartir -> **Añadir a pantalla de inicio** -> **Abrir como app** -> Añadir.
-4. Abrir el icono Gold Trading. Ingresar `admin` / `admin123`; cambiar contraseña desde Preferencias.
-5. Dejar que la app termine de descargar recursos. En Preferencias verificar `Uso sin conexión: Archivos preparados`. La persistencia puede aparecer como `No concedido`, según iOS.
-6. Activar **modo avión**, cerrar completamente Gold Trading y volver a abrirla: comprobar login, cálculos, tabla y preferencias. Reiniciar el iPhone con modo avión y repetir las pruebas.
+Cámbiala en Preferencias después del primer inicio de sesión. El bloqueo es local y no equivale a autenticación con servidor. Las preferencias y el verificador PBKDF2 se conservan localmente mientras el usuario/sistema no elimine el almacenamiento de la PWA.
 
-**Limitaciones importantes:** el almacenamiento en caché y la contraseña local pueden borrarse por acciones del usuario o del sistema. No se puede garantizar funcionamiento offline de por vida. La app no caduca por certificados de Apple, pero el sitio HTTPS debe mantenerse disponible para reinstalarla o descargar de nuevo la caché cuando sea necesario. La prueba real en modo avión y después del reinicio debe realizarse en el iPhone del cliente; no puede certificarse solo desde un simulador de escritorio.
+## Revisar en Windows
 
-## Estructura
+1. Extraer completamente el ZIP.
+2. Abrir la carpeta de Gold Trading en un terminal.
+3. Para desarrollo, iniciar un servidor local, por ejemplo `python -m http.server 8080` y abrir `http://localhost:8080`.
+4. Iniciar sesión, comprobar las dos calculadoras, la tabla de 50 leyes, Preferencias y navegación.
+5. Con Node.js instalado, ejecutar `node tests/test_math.js`, `node tests/test_package.js`, `node tests/test_sw.js` y `node tests/test_status.js`.
 
-- `index.html`: login, calculadora, tabla por leyes, preferencias.
-- `styles.css`: estilos responsivos para iPhone.
-- `math.js`: toda la aritmética local.
-- `app.js`: lógica de navegación, acceso y ajustes.
-- `sw.js`: caché offline versionada.
-- `manifest.webmanifest`: instalación standalone.
-- `icons/`: iconos locales incluidos.
-- `tests/`: pruebas automáticas de cálculo y estructura (requieren Node.js solo para desarrollo).
+## Instalar en iPhone
 
-Los cálculos no se envían a ningún servicio externo. Las preferencias y el verificador de la contraseña **sí requieren almacenamiento local mínimo**, indispensable para poder modificarlos y conservarlos al cerrar la aplicación. No es una base de datos de operaciones.
+1. Publicar el **contenido completo** de la carpeta en un sitio HTTPS, manteniendo la estructura de archivos.
+2. Abrir la URL desde Safari en el iPhone con internet.
+3. Usar **Compartir → Añadir a pantalla de inicio → Abrir como app**.
+4. Abrir Gold Trading desde su ícono con internet. En Preferencias comprobar que el estado `Uso sin conexión` indique que los archivos estén preparados y revisar el resultado real de `Almacenamiento persistente`. El permiso persistente depende de iOS.
+5. Para la prueba física, activar modo avión, cerrar la app completamente y reabrirla. Confirmar acceso, ambas calculadoras y la tabla. Después, reiniciar el iPhone todavía en modo avión y repetir.
+
+**ACTUALIZACIÓN DE UNA INSTALACIÓN EXISTENTE:** publica también la carpeta `images/` y abre la aplicación con conexión para instalar el Service Worker con caché v5. Después vuelve a abrirla y comprueba el estado de uso sin conexión en Preferencias. La actualización no borra las preferencias ni el acceso local; evita borrar los datos del sitio si deseas conservarlos.
+
+## Validación realizada
+
+- `node tests/test_math.js`: 124 validaciones matemáticas y de formato.
+- `node tests/test_package.js`: estructura, instalación standalone, acceso y preferencias.
+- `node tests/test_sw.js`: precarga de recursos, incluida la imagen, navegación y fallback offline.
+- `node tests/test_status.js`: 8 escenarios simulados de caché y persistencia.
+
+Las pruebas automatizadas no sustituyen la comprobación visual en Safari/iPhone ni la prueba física de reapertura sin conexión.
