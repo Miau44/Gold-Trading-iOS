@@ -1,60 +1,49 @@
-# Gold Trading PWA — versión 2 · calculadora individual + tabla completa
+# Gold Trading PWA v3 - Calculadora Windows adaptada para iPhone
 
-Aplicación web instalable (PWA) basada en la calculadora de tasación del programa Windows.
+La versión actual contiene exactamente las funciones necesarias para el cliente:
+- Inicio de sesión con usuario y contraseña local.
+- Calculadora principal de precio por gramo (onza, porcentaje, dólar, ley).
+- Segunda calculadora independiente con los precios de todas las leyes 99-50, sin descuento en los importes de referencia como en Windows.
+- Preferencias de valores predeterminados.
+- Cambio de contraseña desde Preferencias y cierre de sesión.
 
-## Alcance
-- Tasación de oro por onza USD, descuento, cotización USD/BOB, ley y peso en gramos.
-- Precios por gramo y totales en USD y BOB.
-- Segunda calculadora independiente con cotización, porcentaje, onza y ley, y tabla de 50 precios por gramo en bolivianos de ley 99 a 50. Reproduce las cifras de la captura de Windows para onza 2000, dólar 7,96 y porcentaje 0.
-- Sin compras, ventas, registros, consultas en línea, historial ni base de datos.
-- Sin dependencias externas, frameworks, fuentes web ni llamadas a servidores de cotizaciones.
-- Valores iniciales de la app Windows: onza 2000 USD y cotización 6.96 Bs (NO son precios actuales).
+**No incluye:** peso de piezas, cálculo de total por peso, registros de compras/ventas, historial, consultas por internet, servidor de cálculo ni base de datos.
 
-## Fórmula principal
-- USD/g = (onza USD / 31.1035) × (ley / 100) × ((100 - descuento) / 100).
-- Bs/g = USD/g × cotización.
-- Totales = valor por gramo × gramos.
-- Ley válida: 50 a 99.99; descuento: 0 a 100.
-- Los resultados se muestran con 2 decimales.
-- Tabla de leyes: Bs/g = (onza USD / 31.1035) × (ley / 100) × ((100 - porcentaje) / 100) × cotización.
-- La ley elegida en la segunda calculadora se destaca en la tabla, sin ocultar ninguna de las 50 filas.
-- La segunda sección arranca con valores independientes: cotización 7,96, porcentaje 0, onza 2000, ley 99.
+## Credenciales de la primera instalación
 
-## Probar en Windows
-No abras `index.html` mediante `file://` para probar el offline: los Service Workers requieren HTTPS o localhost.
+- Usuario inicial: `admin`
+- Contraseña inicial: `admin123`
 
-Con Python instalado, desde esta carpeta ejecuta:
+Estas son las credenciales predeterminadas encontradas en el ejecutable original de Windows. **Se recomienda cambiar la contraseña** en Preferencias después del primer acceso. La contraseña se guarda como un verificador PBKDF2-SHA256 con sal aleatoria en el almacenamiento del navegador, no en texto plano. Esto es un bloqueo local de uso individual y **no equivale a seguridad de autenticación con servidor**. Si se borran los datos de la PWA, las credenciales y las preferencias vuelven a su estado inicial. La contraseña configurada en otra instalación, incluido Windows, no se importa automáticamente.
 
-```sh
-python -m http.server 8000
-```
+## Cómo probar en Windows (sin Mac)
 
-Abre http://localhost:8000 en Chrome/Edge. Los cálculos ya funcionan sin servidor: la conexión solo se usa para cargar el sitio inicialmente. Para verificar la caché, visita la app, espera a que su Service Worker esté activo, desactiva la red y recarga.
+1. Descomprimir todo el ZIP en una carpeta.
+2. Para revisar solo la interfaz y los cálculos, abrir `index.html` en un navegador compatible.
+3. Para probar instalación PWA y caché offline, servir la carpeta por HTTP en `localhost`, por ejemplo:
+   `python -m http.server 8080`
+4. Abrir `http://localhost:8080`, iniciar sesión y comprobar las dos calculadoras y Preferencias.
 
-## Instalar en iPhone
-1. Publica el **contenido** de esta carpeta (no el ZIP) en un alojamiento estático HTTPS propio. Es necesario un URL HTTPS accesible para la primera instalación y recuperaciones.
-2. En iPhone, abre la dirección con Safari, toca Compartir → Añadir a pantalla de inicio, habilita **Abrir como app** y pulsa Añadir.
-3. Abre Gold Trading **con conexión** para permitir guardar la caché completa (una vez).
-4. Activa **Modo avión**, cierra completamente Gold Trading y vuelve a abrirla. Realiza algunos cálculos.
-5. Reinicia el iPhone aún sin internet y repite la prueba. Este último paso debe ejecutarse en un iPhone real, no se puede validar desde el entorno de desarrollo.
-6. Al pasar a otro iPhone, repite la instalación desde el mismo enlace; no se asume transferencia automática de caché offline.
+## Instalación en iPhone (requiere HTTPS una vez)
 
-## Almacenamiento persistente y advertencia
-El código invoca `navigator.storage.persist()` cuando está disponible y verifica el resultado con `navigator.storage.persisted()`. WebKit puede negar esa solicitud por heurísticas. Incluso si se solicita persistencia, no puede garantizarse que el iPhone conserve eternamente archivos locales tras acciones del usuario o cambios del sistema. Si iOS borra el caché, Gold Trading necesitará conectarse al alojamiento HTTPS para recuperar los archivos.
+1. Publicar **todos** los archivos de esta carpeta (manteniendo rutas) en un alojamiento estático HTTPS.
+2. En el iPhone, abrir la dirección HTTPS **en Safari** con internet.
+3. Compartir -> **Añadir a pantalla de inicio** -> **Abrir como app** -> Añadir.
+4. Abrir el icono Gold Trading. Ingresar `admin` / `admin123`; cambiar contraseña desde Preferencias.
+5. Dejar que la app termine de descargar recursos. En Preferencias verificar `Uso sin conexión: Archivos preparados`. La persistencia puede aparecer como `No concedido`, según iOS.
+6. Activar **modo avión**, cerrar completamente Gold Trading y volver a abrirla: comprobar login, cálculos, tabla y preferencias. Reiniciar el iPhone con modo avión y repetir las pruebas.
 
-## Entrega
-**Versión 2:** fórmulas reconstruidas con base en los artefactos de Gold Trading Windows y revisión Swift de noviembre 2026. Antes de entregar al jefe, compara resultados y etiquetas en la app original, y valida en un iPhone real. No incluye servicios de alojamiento ni dominio. No recopila datos ni hace llamadas a API.
+**Limitaciones importantes:** el almacenamiento en caché y la contraseña local pueden borrarse por acciones del usuario o del sistema. No se puede garantizar funcionamiento offline de por vida. La app no caduca por certificados de Apple, pero el sitio HTTPS debe mantenerse disponible para reinstalarla o descargar de nuevo la caché cuando sea necesario. La prueba real en modo avión y después del reinicio debe realizarse en el iPhone del cliente; no puede certificarse solo desde un simulador de escritorio.
 
-## Comprobación contra la captura de Windows
-Para ONZA=2000, PORCENTAJE=0 y COT. DÓLAR=7,96, deben aparecer estos valores por ley:
+## Estructura
 
-| Ley | Precio Bs/g |
-|---|---:|
-|99|506,72|
-|90|460,66|
-|80|409,47|
-|70|358,29|
-|60|307,10|
-|50|255,92|
+- `index.html`: login, calculadora, tabla por leyes, preferencias.
+- `styles.css`: estilos responsivos para iPhone.
+- `math.js`: toda la aritmética local.
+- `app.js`: lógica de navegación, acceso y ajustes.
+- `sw.js`: caché offline versionada.
+- `manifest.webmanifest`: instalación standalone.
+- `icons/`: iconos locales incluidos.
+- `tests/`: pruebas automáticas de cálculo y estructura (requieren Node.js solo para desarrollo).
 
-El porcentaje se implementa como descuento sobre el precio de referencia. La captura proporcionada muestra 0%; si la versión de escritorio utiliza el campo "Porcentaje" con otra regla en la tabla, comprobar un caso distinto de cero antes de dar por validada esa particularidad.
+Los cálculos no se envían a ningún servicio externo. Las preferencias y el verificador de la contraseña **sí requieren almacenamiento local mínimo**, indispensable para poder modificarlos y conservarlos al cerrar la aplicación. No es una base de datos de operaciones.
