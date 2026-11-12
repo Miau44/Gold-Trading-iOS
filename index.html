@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#071d3c">
+  <meta name="color-scheme" content="light">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Gold Trading">
+  <meta name="description" content="Calculadora de tasación de oro, disponible sin conexión.">
+  <link rel="icon" type="image/png" href="./icons/icon-192.png">
+  <link rel="apple-touch-icon" href="./icons/apple-touch-icon.png">
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="stylesheet" href="./styles.css">
+  <script src="./math.js" defer></script>
+  <script src="./app.js" defer></script>
+  <title>Gold Trading</title>
+</head>
+<body>
+  <main class="app-shell">
+    <header class="masthead">
+      <img class="brand-logo" src="./icons/icon-192.png" alt="Gold Trading" width="56" height="56">
+      <div class="brand-copy"><p class="brand-name">GOLD TRADING</p><p class="brand-detail">Calculadora de tasación</p></div>
+      <span class="decorative-dot" aria-hidden="true"></span>
+    </header>
+
+    <section class="calculator-card" aria-labelledby="calculator-heading">
+      <div class="section-heading">
+        <div><p class="eyebrow">TASACIÓN DE ORO</p><h1 id="calculator-heading">Calculadora</h1></div>
+        <span class="gold-bar" aria-hidden="true"></span>
+      </div>
+      <form id="calculator-form" novalidate>
+        <div class="form-grid">
+          <div class="field"><label for="ounce">ONZA (USD)</label><div class="input-wrap"><span class="prefix">$</span><input id="ounce" name="ounce" inputmode="decimal" type="text" autocomplete="off" value="2000" aria-describedby="form-error"></div></div>
+          <div class="field"><label for="discount">PORCENTAJE DESCUENTO (%)</label><div class="input-wrap"><input id="discount" name="discount" inputmode="decimal" type="text" autocomplete="off" value="0" aria-describedby="form-error"><span class="suffix">%</span></div></div>
+          <div class="field"><label for="exchange">COT. DÓLAR (BOB)</label><div class="input-wrap"><span class="prefix">Bs</span><input id="exchange" name="exchange" inputmode="decimal" type="text" autocomplete="off" value="6.96" aria-describedby="form-error"></div></div>
+          <div class="field"><label for="ley">LEY (50–99.99)</label><div class="input-wrap"><input id="ley" name="ley" inputmode="decimal" type="text" autocomplete="off" value="99" aria-describedby="form-error"></div></div>
+          <div class="field field-full"><label for="weight">PESO (GRAMOS)</label><div class="input-wrap"><input id="weight" name="weight" inputmode="decimal" type="text" autocomplete="off" value="0" aria-describedby="form-error"><span class="suffix">g</span></div></div>
+        </div>
+        <p class="form-error" id="form-error" role="alert" hidden></p>
+        <div class="button-row"><button class="calculate-btn" type="submit">CALCULAR</button><button class="reset-btn" type="button" id="reset-btn">LIMPIAR</button></div>
+      </form>
+    </section>
+
+    <section class="results-card" aria-labelledby="results-heading" aria-live="polite">
+      <div class="results-heading"><p class="eyebrow">RESULTADOS</p><h2 id="results-heading">Valor de tasación</h2></div>
+      <div class="result-group">
+        <p class="result-label">PRECIO POR GRAMO</p>
+        <div class="result-main"><span class="result-currency">Bs</span><output id="unit-bob">0.00</output></div>
+        <p class="result-secondary"><span>USD</span> <output id="unit-usd">0.00</output></p>
+      </div>
+      <div class="result-separator"></div>
+      <div class="result-group">
+        <p class="result-label">TOTAL</p>
+        <div class="result-main"><span class="result-currency">Bs</span><output id="total-bob">0.00</output></div>
+        <p class="result-secondary"><span>USD</span> <output id="total-usd">0.00</output></p>
+      </div>
+    </section>
+    <footer class="footer">GOLD TRADING · CÁLCULOS LOCALES</footer>
+  </main>
+</body>
+</html>
