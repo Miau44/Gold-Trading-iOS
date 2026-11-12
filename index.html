@@ -8,74 +8,127 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Gold Trading">
-  <meta name="description" content="Calculadora de tasación de oro, disponible sin conexión.">
+  <meta name="description" content="Calculadora de oro y tabla de leyes, disponible sin conexión.">
   <link rel="icon" type="image/png" href="./icons/icon-192.png">
   <link rel="apple-touch-icon" href="./icons/apple-touch-icon.png">
   <link rel="manifest" href="./manifest.webmanifest">
   <link rel="stylesheet" href="./styles.css">
   <script src="./math.js" defer></script>
   <script src="./app.js" defer></script>
-  <title>Gold Trading</title>
+  <title>Gold Trading · Calculadora de oro</title>
 </head>
 <body>
-  <main class="app-shell">
-    <header class="masthead">
-      <img class="brand-logo" src="./icons/icon-192.png" alt="Gold Trading" width="56" height="56">
+  <main id="auth-view" class="auth-shell">
+    <header class="masthead auth-brand">
+      <img class="brand-logo" src="./icons/icon-192.png" alt="" width="56" height="56">
       <div class="brand-copy"><p class="brand-name">GOLD TRADING</p><p class="brand-detail">Calculadora de tasación</p></div>
       <span class="decorative-dot" aria-hidden="true"></span>
     </header>
-
-    <section class="calculator-card" aria-labelledby="calculator-heading">
-      <div class="section-heading">
-        <div><p class="eyebrow">TASACIÓN DE ORO</p><h1 id="calculator-heading">Calculadora</h1></div>
-        <span class="gold-bar" aria-hidden="true"></span>
-      </div>
-      <form id="calculator-form" novalidate>
-        <div class="form-grid">
-          <div class="field"><label for="ounce">ONZA (USD)</label><div class="input-wrap"><span class="prefix">$</span><input id="ounce" name="ounce" inputmode="decimal" type="text" autocomplete="off" value="2000" aria-describedby="form-error"></div></div>
-          <div class="field"><label for="discount">PORCENTAJE DESCUENTO (%)</label><div class="input-wrap"><input id="discount" name="discount" inputmode="decimal" type="text" autocomplete="off" value="0" aria-describedby="form-error"><span class="suffix">%</span></div></div>
-          <div class="field"><label for="exchange">COT. DÓLAR (BOB)</label><div class="input-wrap"><span class="prefix">Bs</span><input id="exchange" name="exchange" inputmode="decimal" type="text" autocomplete="off" value="6.96" aria-describedby="form-error"></div></div>
-          <div class="field"><label for="ley">LEY (50–99.99)</label><div class="input-wrap"><input id="ley" name="ley" inputmode="decimal" type="text" autocomplete="off" value="99" aria-describedby="form-error"></div></div>
-          <div class="field field-full"><label for="weight">PESO (GRAMOS)</label><div class="input-wrap"><input id="weight" name="weight" inputmode="decimal" type="text" autocomplete="off" value="0" aria-describedby="form-error"><span class="suffix">g</span></div></div>
-        </div>
-        <p class="form-error" id="form-error" role="alert" hidden></p>
-        <div class="button-row"><button class="calculate-btn" type="submit">CALCULAR</button><button class="reset-btn" type="button" id="reset-btn">LIMPIAR</button></div>
+    <section class="auth-card" aria-labelledby="login-title">
+      <div class="auth-symbol" aria-hidden="true">GT</div>
+      <p class="eyebrow">ACCESO A GOLD TRADING</p>
+      <h1 id="login-title">Iniciar sesión</h1>
+      <p class="auth-description">Ingresa tus credenciales para abrir la calculadora.</p>
+      <form id="login-form" novalidate>
+        <div class="field"><label for="username">USUARIO</label><div class="input-wrap"><input id="username" name="username" type="text" autocomplete="username" autocapitalize="off" spellcheck="false" placeholder="Usuario" required></div></div>
+        <div class="field"><label for="password">CONTRASEÑA</label><div class="input-wrap"><input id="password" name="password" type="password" autocomplete="current-password" placeholder="Contraseña" required></div></div>
+        <p class="form-error" id="login-error" role="alert" hidden></p>
+        <button type="submit" id="login-btn" class="primary-btn full-btn">INGRESAR</button>
       </form>
     </section>
+    <footer class="footer auth-footer">GOLD TRADING · CÁLCULOS LOCALES</footer>
+  </main>
 
-    <section class="results-card" aria-labelledby="results-heading" aria-live="polite">
-      <div class="results-heading"><p class="eyebrow">RESULTADOS</p><h2 id="results-heading">Valor de tasación</h2></div>
-      <div class="result-group">
-        <p class="result-label">PRECIO POR GRAMO</p>
-        <div class="result-main"><span class="result-currency">Bs</span><output id="unit-bob">0.00</output></div>
-        <p class="result-secondary"><span>USD</span> <output id="unit-usd">0.00</output></p>
-      </div>
-      <div class="result-separator"></div>
-      <div class="result-group">
-        <p class="result-label">TOTAL</p>
-        <div class="result-main"><span class="result-currency">Bs</span><output id="total-bob">0.00</output></div>
-        <p class="result-secondary"><span>USD</span> <output id="total-usd">0.00</output></p>
-      </div>
-    </section>
-    <section class="reference-card" aria-labelledby="reference-heading">
-      <div class="section-heading reference-heading">
-        <div><p class="eyebrow">TABLA DE COTIZACIÓN</p><h2 id="reference-heading">Calculadora por ley</h2><p class="reference-description">Precios por gramo de oro · leyes 99 a 50</p></div>
-        <span class="gold-bar" aria-hidden="true"></span>
-      </div>
+  <main id="app-view" class="app-shell" hidden>
+    <header class="masthead">
+      <img class="brand-logo" src="./icons/icon-192.png" alt="" width="56" height="56">
+      <div class="brand-copy"><p class="brand-name">GOLD TRADING</p><p class="brand-detail">Calculadora de tasación</p></div>
+      <span class="decorative-dot" aria-hidden="true"></span>
+    </header>
+    <nav class="tab-bar" aria-label="Secciones">
+      <button type="button" id="nav-calculator" class="tab active" aria-current="page">Calculadora</button>
+      <button type="button" id="nav-settings" class="tab">Preferencias</button>
+    </nav>
 
-      <!-- Los valores de esta segunda calculadora son independientes de los de arriba. -->
-      <form id="reference-form" novalidate>
-        <div class="form-grid reference-input-grid">
-          <div class="field"><label for="reference-exchange">COT. DÓLAR (BOB)</label><div class="input-wrap"><span class="prefix">Bs</span><input id="reference-exchange" name="reference-exchange" type="text" inputmode="decimal" autocomplete="off" value="7,96" aria-describedby="reference-error"></div></div>
-          <div class="field"><label for="reference-discount">PORCENTAJE (%)</label><div class="input-wrap"><input id="reference-discount" name="reference-discount" type="text" inputmode="decimal" autocomplete="off" value="0" aria-describedby="reference-error"><span class="suffix">%</span></div></div>
-          <div class="field"><label for="reference-ounce">ONZA (USD)</label><div class="input-wrap"><span class="prefix">$</span><input id="reference-ounce" name="reference-ounce" type="text" inputmode="decimal" autocomplete="off" value="2000" aria-describedby="reference-error"></div></div>
-          <div class="field"><label for="reference-ley">LEY (50–99.99)</label><div class="input-wrap"><input id="reference-ley" name="reference-ley" type="text" inputmode="decimal" autocomplete="off" value="99" aria-describedby="reference-error"></div></div>
+    <div id="calculator-view">
+      <section class="calculator-card" aria-labelledby="calculator-heading">
+        <div class="section-heading">
+          <div><p class="eyebrow">TASACIÓN DE ORO</p><h1 id="calculator-heading">Calculadora</h1></div>
+          <span class="gold-bar" aria-hidden="true"></span>
         </div>
-        <p class="form-error" id="reference-error" role="alert" hidden></p>
-      </form>
-      <div class="reference-tables" id="reference-tables" aria-label="Precios por ley del oro, de 99 a 50"></div>
-    </section>
+        <form id="calculator-form" novalidate>
+          <div class="form-grid">
+            <div class="field"><label for="ounce">ONZA (USD)</label><div class="input-wrap"><span class="prefix">$</span><input id="ounce" name="ounce" type="text" inputmode="decimal" autocomplete="off" aria-describedby="form-error"></div></div>
+            <div class="field"><label for="discount">PORCENTAJE (%)</label><div class="input-wrap"><input id="discount" name="discount" type="text" inputmode="decimal" autocomplete="off" aria-describedby="form-error"><span class="suffix">%</span></div></div>
+            <div class="field"><label for="exchange">COT. DÓLAR (BOB)</label><div class="input-wrap"><span class="prefix">Bs</span><input id="exchange" name="exchange" type="text" inputmode="decimal" autocomplete="off" aria-describedby="form-error"></div></div>
+            <div class="field"><label for="ley">LEY (50–99.99)</label><div class="input-wrap"><input id="ley" name="ley" type="text" inputmode="decimal" autocomplete="off" aria-describedby="form-error"></div></div>
+          </div>
+          <p class="form-error" id="form-error" role="alert" hidden></p>
+          <div class="button-row"><button class="calculate-btn" type="submit">CALCULAR</button><button class="reset-btn" type="button" id="reset-btn">LIMPIAR</button></div>
+        </form>
+      </section>
 
+      <section class="results-card" aria-labelledby="results-heading" aria-live="polite">
+        <div class="results-heading"><p class="eyebrow">RESULTADOS</p><h2 id="results-heading">Precio por gramo</h2></div>
+        <div class="result-group compact-result">
+          <div class="result-main"><span class="result-currency">Bs</span><output id="unit-bob">—</output></div>
+          <p class="result-secondary"><span>USD</span> <output id="unit-usd">—</output></p>
+        </div>
+      </section>
+
+      <section class="reference-card" aria-labelledby="reference-heading">
+        <div class="section-heading reference-heading">
+          <div><p class="eyebrow">TABLA DE COTIZACIÓN</p><h2 id="reference-heading">Calculadora por ley</h2><p class="reference-description">Precios por gramo · leyes del 99 al 50</p></div>
+          <span class="gold-bar" aria-hidden="true"></span>
+        </div>
+        <form id="reference-form" novalidate>
+          <div class="form-grid reference-input-grid">
+            <div class="field"><label for="reference-exchange">COT. DÓLAR (BOB)</label><div class="input-wrap"><span class="prefix">Bs</span><input id="reference-exchange" type="text" inputmode="decimal" autocomplete="off" aria-describedby="reference-error"></div></div>
+            <div class="field"><label for="reference-discount">PORCENTAJE (%)</label><div class="input-wrap"><input id="reference-discount" type="text" inputmode="decimal" autocomplete="off" aria-describedby="reference-error"><span class="suffix">%</span></div></div>
+            <div class="field"><label for="reference-ounce">ONZA (USD)</label><div class="input-wrap"><span class="prefix">$</span><input id="reference-ounce" type="text" inputmode="decimal" autocomplete="off" aria-describedby="reference-error"></div></div>
+            <div class="field"><label for="reference-ley">LEY (50–99.99)</label><div class="input-wrap"><input id="reference-ley" type="text" inputmode="decimal" autocomplete="off" aria-describedby="reference-error"></div></div>
+          </div>
+          <p class="form-error" id="reference-error" role="alert" hidden></p>
+        </form>
+        <div class="reference-tables" id="reference-tables" aria-label="Precios de las leyes del oro, de 99 a 50"></div>
+      </section>
+    </div>
+
+    <div id="settings-view" hidden>
+      <section class="settings-card" aria-labelledby="settings-title">
+        <div class="section-heading"><div><p class="eyebrow">CONFIGURACIÓN</p><h1 id="settings-title">Preferencias y valores por defecto</h1></div><span class="gold-bar" aria-hidden="true"></span></div>
+        <p class="settings-description">Estos valores se aplicarán automáticamente al abrir la calculadora y al limpiarla.</p>
+        <form id="preferences-form" novalidate>
+          <div class="settings-grid">
+            <div class="field"><label for="setting-ounce">ONZA USD</label><div class="input-wrap"><input id="setting-ounce" type="text" inputmode="decimal" autocomplete="off"></div><p class="field-help">Precio internacional de la onza troy en dólares americanos.</p></div>
+            <div class="field"><label for="setting-exchange">COT. DÓLAR (BOB)</label><div class="input-wrap"><input id="setting-exchange" type="text" inputmode="decimal" autocomplete="off"></div><p class="field-help">Tipo de cambio local (Bs por 1 USD) para calcular los precios.</p></div>
+            <div class="field"><label for="setting-percentage">PORCENTAJE (%)</label><div class="input-wrap"><input id="setting-percentage" type="text" inputmode="decimal" autocomplete="off"></div><p class="field-help">Porcentaje aplicado al cálculo; 0 % no descuenta el valor.</p></div>
+          </div>
+          <p class="form-error" id="preferences-error" role="alert" hidden></p>
+          <p class="success-message" id="preferences-success" role="status" hidden></p>
+          <button class="primary-btn form-action" type="submit">GUARDAR PREFERENCIAS</button>
+        </form>
+      </section>
+      <section class="settings-card" aria-labelledby="security-title">
+        <div class="section-heading"><div><p class="eyebrow">SEGURIDAD</p><h2 id="security-title">Configuración de seguridad</h2></div><span class="gold-bar" aria-hidden="true"></span></div>
+        <p class="settings-description">Cambiar la contraseña de inicio de sesión.</p>
+        <form id="password-form" novalidate>
+          <div class="settings-grid">
+            <div class="field"><label for="current-password">CONTRASEÑA ACTUAL</label><div class="input-wrap"><input id="current-password" type="password" autocomplete="current-password" placeholder="Contraseña actual"></div></div>
+            <div class="field"><label for="new-password">NUEVA CONTRASEÑA</label><div class="input-wrap"><input id="new-password" type="password" autocomplete="new-password" placeholder="Mínimo 8 caracteres"></div></div>
+            <div class="field"><label for="confirm-password">CONFIRMAR CONTRASEÑA</label><div class="input-wrap"><input id="confirm-password" type="password" autocomplete="new-password" placeholder="Repite la contraseña"></div></div>
+          </div>
+          <p class="form-error" id="password-error" role="alert" hidden></p>
+          <p class="success-message" id="password-success" role="status" hidden></p>
+          <button class="primary-btn form-action" id="password-btn" type="submit">CAMBIAR CONTRASEÑA</button>
+        </form>
+      </section>
+      <section class="settings-card settings-utility" aria-label="Sesión y uso sin conexión">
+        <div class="storage-status"><span>Uso sin conexión</span><strong id="offline-status">Preparando archivos…</strong></div>
+        <div class="storage-status"><span>Almacenamiento persistente</span><strong id="persistence-status">Comprobando…</strong></div>
+        <button id="logout-btn" type="button" class="logout-btn">CERRAR SESIÓN</button>
+      </section>
+    </div>
     <footer class="footer">GOLD TRADING · CÁLCULOS LOCALES</footer>
   </main>
 </body>

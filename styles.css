@@ -26,3 +26,30 @@
 @media(max-width:360px){.reference-card{padding-left:13px;padding-right:13px}.reference-tables{gap:7px}.reference-price-row{font-size:12.5px}.reference-ley,.reference-price{padding:7px 4px}.reference-block-head{font-size:10px}}
 @media(min-width:700px){.app-shell{max-width:1040px}.masthead,.calculator-card,.results-card{max-width:650px;margin-left:auto;margin-right:auto}.reference-card{padding:24px}.reference-input-grid{grid-template-columns:repeat(4,minmax(0,1fr))}.reference-tables{grid-template-columns:repeat(5,minmax(0,1fr));gap:9px}.reference-block-head,.reference-price-row{grid-template-columns:35% 65%}.reference-price-row{font-size:14px}}
 @media(max-width:380px){.reference-input-grid .field label{font-size:9.5px}}
+/* Gold Trading v3: acceso, preferencias y navegacion; sin compras ni historial. */
+[hidden]{display:none!important}
+.auth-shell{max-width:500px;min-height:100dvh;margin:0 auto;padding:calc(env(safe-area-inset-top,0px) + 40px) 17px calc(env(safe-area-inset-bottom,0px) + 22px)}
+.auth-brand{padding-bottom:42px}
+.auth-card{background:#fff;border:1px solid #e7ebf0;border-radius:22px;padding:30px 24px;box-shadow:0 14px 45px #041b3740}
+.auth-symbol{background:linear-gradient(135deg,#a77424,#eec971);color:#08284d;font-size:22px;font-weight:900;letter-spacing:-.06em;width:52px;height:52px;display:flex;align-items:center;justify-content:center;border-radius:13px;margin-bottom:22px}
+.auth-card h1{font-size:28px;letter-spacing:-.04em;margin:5px 0 5px}.auth-description{font-size:13px;line-height:1.5;color:#60748c;margin:0 0 25px}
+.auth-card .field{margin-top:15px}.auth-card .field label{font-size:11px}
+.primary-btn{background:#0965b6;color:#fff;padding:0 18px;border-radius:11px;box-shadow:0 4px 16px #0b65b322;min-height:49px;font-weight:800;letter-spacing:.035em}
+.primary-btn:active{background:#07518f}.primary-btn:disabled{opacity:.55;cursor:wait}
+.full-btn{width:100%;margin-top:22px}.auth-footer{color:#879db8}
+.tab-bar{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:0 0 13px}
+.tab{background:#ffffff18;color:#cedaf0;border:1px solid #ffffff25;border-radius:11px;font-weight:800;min-height:43px;font-size:12px;letter-spacing:.025em}
+.tab.active{background:#f5f8fc;color:#0a2e57;border-color:#f5f8fc;box-shadow:0 3px 11px #021b3555}
+.compact-result{padding-bottom:0}.results-card .compact-result .result-main{font-size:clamp(37px,8vw,52px)}
+.settings-card{background:#fff;border:1px solid #e7ebf0;border-radius:21px;box-shadow:0 8px 27px #0821440e;margin-bottom:15px;padding:21px 18px 22px}
+.settings-card h1,.settings-card h2{font-size:22px;line-height:1.23;letter-spacing:-.03em;margin:5px 0 0}
+.settings-card .section-heading{margin-bottom:9px}.settings-description{font-size:12px;line-height:1.5;color:#687a92;margin:0 0 19px}
+.settings-grid{display:grid;grid-template-columns:1fr;gap:16px}.settings-grid .field label{font-size:11px}
+.field-help{font-size:11px;line-height:1.38;color:#8893a1;margin:6px 3px 0}
+.form-action{width:100%;margin-top:18px}
+.success-message{background:#e8f6ed;color:#166236;margin:13px 0 0;padding:11px 12px;border-radius:10px;font-size:12px;font-weight:650;line-height:1.45}
+.storage-status{display:flex;justify-content:space-between;align-items:baseline;gap:10px;padding:7px 0;font-size:12px}
+.storage-status span{color:#667891}.storage-status strong{font-weight:700;color:#113a69;text-align:right}
+.logout-btn{width:100%;min-height:46px;background:#f2f4f8;color:#92412f;margin-top:15px;font-size:12px}
+@media(min-width:700px){.settings-card{padding:25px}.settings-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:17px}.form-action{display:block;width:auto;margin-left:auto;padding:0 22px}.auth-card{padding:34px}}
+@media(max-width:360px){.auth-card{padding:23px 17px}.auth-brand{padding-bottom:27px}.settings-card{padding-left:13px;padding-right:13px}.settings-card h1,.settings-card h2{font-size:20px}}
