@@ -1,7 +1,7 @@
 {
   "name": "Gold Trading",
   "short_name": "Gold Trading",
-  "description": "Calculadora de tasación de oro de uso local",
+  "description": "Calculadora de oro y tabla de leyes de uso local",
   "lang": "es",
   "id": "./",
   "start_url": "./",
