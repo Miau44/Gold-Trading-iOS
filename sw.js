@@ -1,8 +1,8 @@
-/* Gold Trading v3: todos los recursos de la calculadora se cargan localmente. */
-const CACHE_VERSION = 'goldtrading-offline-v3';
+/* Gold Trading v5: todos los recursos de la calculadora se cargan localmente. */
+const CACHE_VERSION = 'goldtrading-offline-v5';
 const OFFLINE_FILES = [
   './', './index.html', './styles.css', './math.js', './app.js',
-  './manifest.webmanifest', './icons/icon-192.png', './icons/icon-512.png',
+  './images/results-gold.png', './manifest.webmanifest', './icons/icon-192.png', './icons/icon-512.png',
   './icons/apple-touch-icon.png'
 ];
 self.addEventListener('install', event => {

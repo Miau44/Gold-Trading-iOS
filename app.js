@@ -301,8 +301,8 @@
     try {
       await navigator.serviceWorker.register('./sw.js', {scope:'./'});
       await navigator.serviceWorker.ready;
-      const cache = await caches.open('goldtrading-offline-v3');
-      const required = ['./index.html','./styles.css','./math.js','./app.js'];
+      const cache = await caches.open('goldtrading-offline-v5');
+      const required = ['./index.html','./styles.css','./math.js','./app.js','./images/results-gold.png'];
       const found = await Promise.all(required.map(path => cache.match(new URL(path, document.baseURI))));
       target.textContent = found.every(Boolean) ? 'Archivos preparados' : 'Descarga inicial pendiente';
     } catch (err) {

@@ -21,9 +21,9 @@ vm.runInNewContext(js,{self,caches,URL,Promise,fetch:async()=>{throw new Error('
 (async()=>{
  let pending;
  listeners.install({waitUntil:p=>pending=p});await pending;
- assert.equal((await caches.keys())[0],'goldtrading-offline-v3');
- const cache=await caches.open('goldtrading-offline-v3');
- for(const file of ['index.html','styles.css','math.js','app.js','manifest.webmanifest','icons/icon-192.png']) assert.ok(await cache.match(file),file);
+ assert.equal((await caches.keys())[0],'goldtrading-offline-v5');
+ const cache=await caches.open('goldtrading-offline-v5');
+ for(const file of ['index.html','styles.css','math.js','app.js','images/results-gold.png','manifest.webmanifest','icons/icon-192.png']) assert.ok(await cache.match(file),file);
  let response;
  listeners.fetch({request:{method:'GET',url:base+'index.html',mode:'navigate'},respondWith:p=>response=p});
  assert.equal(await response,'local:./index.html');

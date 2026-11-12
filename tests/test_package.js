@@ -8,7 +8,7 @@ const html=read('index.html'),app=read('app.js'),sw=read('sw.js');
 for(const file of ['index.html','styles.css','math.js','app.js','sw.js','manifest.webmanifest','icons/icon-192.png','icons/icon-512.png','icons/apple-touch-icon.png']) assert.ok(fs.existsSync(path.join(root,file)),file);
 for(const id of ['login-form','password-form','preferences-form','calculator-form','reference-form','reference-tables','logout-btn','unit-bob','unit-usd','offline-status','persistence-status']) assert.ok(html.includes(`id="${id}"`),id);
 for(const banned of ['id="weight"','id="total-bob"','id="total-usd"','GUARDAR COMPRA','HISTORIAL','REGISTRO DE VENTAS']) assert.ok(!html.includes(banned),`no incluir ${banned}`);
-assert.ok(sw.includes('goldtrading-offline-v3'));
+assert.ok(sw.includes('goldtrading-offline-v5'));
 assert.ok(app.includes('navigator.storage.persist()'));
 assert.ok(app.includes('navigator.storage.persisted()'));
 assert.ok(app.includes('PBKDF2'));
