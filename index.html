@@ -57,6 +57,25 @@
         <p class="result-secondary"><span>USD</span> <output id="total-usd">0.00</output></p>
       </div>
     </section>
+    <section class="reference-card" aria-labelledby="reference-heading">
+      <div class="section-heading reference-heading">
+        <div><p class="eyebrow">TABLA DE COTIZACIÓN</p><h2 id="reference-heading">Calculadora por ley</h2><p class="reference-description">Precios por gramo de oro · leyes 99 a 50</p></div>
+        <span class="gold-bar" aria-hidden="true"></span>
+      </div>
+
+      <!-- Los valores de esta segunda calculadora son independientes de los de arriba. -->
+      <form id="reference-form" novalidate>
+        <div class="form-grid reference-input-grid">
+          <div class="field"><label for="reference-exchange">COT. DÓLAR (BOB)</label><div class="input-wrap"><span class="prefix">Bs</span><input id="reference-exchange" name="reference-exchange" type="text" inputmode="decimal" autocomplete="off" value="7,96" aria-describedby="reference-error"></div></div>
+          <div class="field"><label for="reference-discount">PORCENTAJE (%)</label><div class="input-wrap"><input id="reference-discount" name="reference-discount" type="text" inputmode="decimal" autocomplete="off" value="0" aria-describedby="reference-error"><span class="suffix">%</span></div></div>
+          <div class="field"><label for="reference-ounce">ONZA (USD)</label><div class="input-wrap"><span class="prefix">$</span><input id="reference-ounce" name="reference-ounce" type="text" inputmode="decimal" autocomplete="off" value="2000" aria-describedby="reference-error"></div></div>
+          <div class="field"><label for="reference-ley">LEY (50–99.99)</label><div class="input-wrap"><input id="reference-ley" name="reference-ley" type="text" inputmode="decimal" autocomplete="off" value="99" aria-describedby="reference-error"></div></div>
+        </div>
+        <p class="form-error" id="reference-error" role="alert" hidden></p>
+      </form>
+      <div class="reference-tables" id="reference-tables" aria-label="Precios por ley del oro, de 99 a 50"></div>
+    </section>
+
     <footer class="footer">GOLD TRADING · CÁLCULOS LOCALES</footer>
   </main>
 </body>

@@ -13,3 +13,11 @@ for(const unwanted of ['GUARDAR COMPRA','HISTORIAL','REGISTROS','CONSULTAR PRECI
 for(const required of ['storage.persisted','storage.persist','serviceWorker.register'])assert.ok(js.includes(required),'API faltante: '+required);
 for(const u of ['https://','http://'])assert.ok(!html.includes(u),'dependencia remota HTML');
 console.log('VALIDACIÓN DEL PAQUETE SUPERADA: manifiesto, precaché y alcance');
+// La tabla y sus cuatro entradas forman parte obligatoria de la calculadora original.
+for(const id of ['reference-form','reference-ounce','reference-discount','reference-exchange','reference-ley','reference-tables'])
+  assert.ok(html.includes(`id="${id}"`),`entrada/tabla faltante ${id}`);
+assert.ok(js.includes('for (let group = 0; group < 5; group++)'),'cinco grupos de leyes');
+assert.ok(js.includes('for (let i = 0; i < 10; i++)'),'diez leyes por grupo');
+const math=fs.readFileSync(path.join(root,'math.js'),'utf8');
+assert.ok(math.includes('function referencePrices('),'fórmula tabla de precios');
+console.log('VALIDACIÓN ESTRUCTURAL DE SEGUNDA CALCULADORA SUPERADA');

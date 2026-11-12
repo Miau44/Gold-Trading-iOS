@@ -6,3 +6,23 @@
 @media(max-width:360px){.app-shell{padding-left:12px;padding-right:12px}.calculator-card,.results-card{padding-left:13px;padding-right:13px}.form-grid{gap:12px 8px}.field label{font-size:9.5px}.input-wrap{padding:0 9px}input{font-size:17px}.brand-name{font-size:17px}}
 @media(min-width:560px){.app-shell{padding-top:calc(env(safe-area-inset-top,0px) + 36px)}.calculator-card,.results-card{padding:24px}.form-grid{gap:18px}.field label{font-size:12px}}
 @media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+
+/* Segunda calculadora: misma tabla de cinco bloques de la versión Windows. */
+.reference-card{max-width:100%;margin-top:16px;padding:20px 18px 24px;background:#fff;border:1px solid #e7ebf0;border-radius:21px;box-shadow:0 8px 27px #0821440e}
+.reference-heading{margin-bottom:18px}.reference-heading h2{font-size:23px;line-height:1.2;letter-spacing:-.035em;margin:4px 0 0}.reference-description{font-size:12px;margin:6px 0 0;color:#687a92}
+.reference-input-grid{gap:14px 11px}.reference-tables{margin-top:18px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px;align-items:start}
+.reference-block{border:1px solid #d8e0ea;border-radius:9px;overflow:hidden;background:#fff;min-width:0}
+.reference-block-head,.reference-price-row{display:grid;grid-template-columns:43% 57%;align-items:stretch}
+.reference-block-head{background:#092d54;color:#fff;font-size:11px;letter-spacing:.035em;font-weight:800;text-align:center;min-height:31px}
+.reference-block-head span{display:flex;justify-content:center;align-items:center;padding:6px 3px}
+.reference-block-head span+span{border-left:2px solid #fff7}
+.reference-price-row{min-height:37px;border-top:1px solid #edf0f4;font-size:13.5px;font-variant-numeric:tabular-nums}
+.reference-ley,.reference-price{display:flex;align-items:center;padding:8px 7px;min-width:0;white-space:nowrap}
+.reference-ley{justify-content:center;color:#152b4e;font-weight:750}
+.reference-price{justify-content:flex-end;background:#f6d500;color:#151b26;font-weight:760;text-align:right}
+.reference-price-row.selected .reference-ley{color:#fff;background:#0a3b70}
+.reference-price-row.selected .reference-price{background:#eec24b}
+.reference-price-row.invalid .reference-price{color:#4c5667;background:#f0f3f8}
+@media(max-width:360px){.reference-card{padding-left:13px;padding-right:13px}.reference-tables{gap:7px}.reference-price-row{font-size:12.5px}.reference-ley,.reference-price{padding:7px 4px}.reference-block-head{font-size:10px}}
+@media(min-width:700px){.app-shell{max-width:1040px}.masthead,.calculator-card,.results-card{max-width:650px;margin-left:auto;margin-right:auto}.reference-card{padding:24px}.reference-input-grid{grid-template-columns:repeat(4,minmax(0,1fr))}.reference-tables{grid-template-columns:repeat(5,minmax(0,1fr));gap:9px}.reference-block-head,.reference-price-row{grid-template-columns:35% 65%}.reference-price-row{font-size:14px}}
+@media(max-width:380px){.reference-input-grid .field label{font-size:9.5px}}
