@@ -46,6 +46,26 @@
     return { unitUSD, unitBOB, totalUSD, totalBOB };
   }
 
+  // Segunda calculadora. Produce los 50 valores de ley (99, 98 ... 50),
+  // cada uno con su precio por gramo. Sin base de datos ni consultas externas.
+  function referencePrices({ ounceUSD, exchangeRate, discount }) {
+    if (![ounceUSD, exchangeRate, discount].every(n => typeof n === 'number' && Number.isFinite(n))) return null;
+    if (ounceUSD <= 0 || exchangeRate <= 0 || discount < 0 || discount > 100) return null;
+    const factor = (ounceUSD / GRAMOS_POR_ONZA_TROY) * (1 - discount / 100) * exchangeRate;
+    if (!Number.isFinite(factor)) return null;
+    const prices = [];
+    for (let ley = 99; ley >= 50; ley--) {
+      const priceBOB = factor * (ley / 100);
+      if (!Number.isFinite(priceBOB)) return null;
+      prices.push({ ley, priceBOB });
+    }
+    return prices;
+  }
+
+  function formatBolivia(value) {
+    return format(value).replace('.', ',');
+  }
+
   function roundToTwoEven(value) {
     if (!Number.isFinite(value)) return NaN;
     const scaled = value * 100;
@@ -62,5 +82,5 @@
     return Number.isFinite(value) ? roundToTwoEven(value).toFixed(2) : '—';
   }
 
-  return { parseNumber, calculate, roundToTwoEven, format, GRAMOS_POR_ONZA_TROY, MIN_LEY, MAX_LEY };
+  return { parseNumber, calculate, referencePrices, roundToTwoEven, format, formatBolivia, GRAMOS_POR_ONZA_TROY, MIN_LEY, MAX_LEY };
 });

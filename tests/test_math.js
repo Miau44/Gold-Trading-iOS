@@ -23,3 +23,20 @@ near(G.roundToTwoEven(1.375),1.38,'banker even up');
 test(G.format(123.4)==='123.40','formato dos decimales');
 test(G.calculate({ounceUSD:2000,exchangeRate:6.96,ley:99,discount:10,weightGrams:20}).unitUSD<res.unitUSD,'descuento');
 console.log(`PRUEBAS SUPERADAS: ${count}`);
+
+const reference = G.referencePrices({ounceUSD:2000,exchangeRate:7.96,discount:0});
+test(reference.length===50,'tabla de 50 leyes');
+for (let i=0;i<50;i++) {
+  test(reference[i].ley===99-i,'secuencia completa '+i);
+  near(reference[i].priceBOB,(2000/31.1035)*((99-i)/100)*7.96,'precio ley '+(99-i));
+}
+for(const [ley,expected] of [[99,'506,72'],[90,'460,66'],[80,'409,47'],[70,'358,29'],[60,'307,10'],[50,'255,92']]) {
+  test(G.formatBolivia(reference[99-ley].priceBOB)===expected,`igual captura ley ${ley}`);
+}
+const referenceDiscount=G.referencePrices({ounceUSD:2000,exchangeRate:7.96,discount:10});
+near(referenceDiscount[0].priceBOB,reference[0].priceBOB*.9,'porcentaje independiente en tabla');
+for(const bad of [-1,101,NaN,Infinity])test(G.referencePrices({ounceUSD:2000,exchangeRate:7.96,discount:bad})===null,'porcentaje inválido tabla');
+test(G.referencePrices({ounceUSD:0,exchangeRate:7.96,discount:0})===null,'onza cero tabla');
+test(G.referencePrices({ounceUSD:2000,exchangeRate:0,discount:0})===null,'dólar cero tabla');
+test(G.referencePrices({ounceUSD:2000,exchangeRate:7.96,discount:100})!==null,'porcentaje 100 aceptado');
+console.log('TABLA COMPLETA VALIDADA (99–50)');
