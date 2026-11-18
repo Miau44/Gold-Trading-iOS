@@ -1,7 +1,7 @@
 {
   "name": "Gold Trading",
   "short_name": "Gold Trading",
-  "description": "Calculadora de oro y tabla de leyes de uso local",
+  "description": "Calculadora de oro con precio spot automático y funcionamiento sin conexión",
   "lang": "es",
   "id": "./",
   "start_url": "./",
@@ -10,7 +10,7 @@
   "background_color": "#071d3c",
   "theme_color": "#071d3c",
   "icons": [
-    { "src": "./icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
-    { "src": "./icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+    { "src": "./icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "./icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" }
   ]
 }
