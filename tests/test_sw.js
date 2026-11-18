@@ -21,14 +21,14 @@ vm.runInNewContext(js,{self,caches,URL,Promise,Request:class {constructor(url,op
 (async()=>{
  let pending;
  listeners.install({waitUntil:p=>pending=p});await pending;
- assert.equal((await caches.keys())[0],'goldtrading-offline-v6');
- const cache=await caches.open('goldtrading-offline-v6');
+ assert.equal((await caches.keys())[0],'goldtrading-offline-v7');
+ const cache=await caches.open('goldtrading-offline-v7');
  const unrelated=await caches.open('other-app');
  unrelated.map.set(norm('index.html'),'incorrect-cache');
  // La lectura debe usar únicamente la caché de esta versión.
- const current=stores.get('goldtrading-offline-v6');
- stores.delete('goldtrading-offline-v6');
- stores.set('goldtrading-offline-v6',current);
+ const current=stores.get('goldtrading-offline-v7');
+ stores.delete('goldtrading-offline-v7');
+ stores.set('goldtrading-offline-v7',current);
  for(const file of ['index.html','styles.css','math.js','app.js','images/results-gold.png','manifest.webmanifest','icons/icon-192.png']) assert.ok(await cache.match(file),file);
  let response;
  listeners.fetch({request:{method:'GET',url:base+'index.html',mode:'navigate'},respondWith:p=>response=p});

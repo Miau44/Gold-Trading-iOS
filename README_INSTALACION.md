@@ -1,6 +1,6 @@
 # Gold Trading PWA v5 - Rediseño premium iPhone 17 Pro Max
 
-Esta entrega parte **directamente de Gold Trading PWA v4**. El rediseño actualiza la presentación de la pantalla posterior al inicio de sesión: encabezado, navegación, tarjetas de calculadoras, tarjeta de resultados, tablas 99–50 y pie de página. La pantalla de inicio de sesión y el contenido de Preferencias no se modificaron.
+Esta entrega parte **directamente de Gold Trading PWA v4**. Actualiza el logo de la aplicación, el precio spot del oro en la calculadora principal y la presentación de la interfaz. El precio se consulta en línea y el último valor recibido queda guardado para usarlo sin conexión.
 
 ## Cambios visuales
 
@@ -8,17 +8,17 @@ Esta entrega parte **directamente de Gold Trading PWA v4**. El rediseño actuali
 - Campos de las calculadoras con valores grandes y botones más fáciles de tocar.
 - Resultados con un valor principal de ~44–50 px y el fondo local `images/results-gold.png`, que reemplaza los lingotes SVG anteriores y se adapta a la tarjeta con `background-size: cover`. Una capa oscura suave ayuda a mantener el contraste del texto.
 - Tablas agrupadas en 99–90, 89–80, 79–70, 69–60 y 59–50, de dos en dos en pantallas móviles. Los precios se muestran a 18 px en el tamaño de referencia (440 CSS px), con 17 px en pantallas más estrechas; en pantallas excepcionalmente pequeñas se ajustan para evitar cortes.
-- Se utilizan fuentes del sistema: no hay dependencias de red para fuentes, gráficos o cálculos.
+- Se utilizan fuentes e imágenes locales. La única consulta externa obtiene la cotización XAU/USD; los cálculos siguen ejecutándose en el dispositivo.
 
 ## Archivos y funcionamiento
 
-- `app.js`: conserva cálculos, navegación y autenticación; comprueba la caché v6, incluidos imagen, manifiesto e iconos, entre los recursos necesarios para el estado offline.
+- `app.js`: conserva cálculos, navegación y autenticación; mientras la PWA está abierta, actualiza el precio spot XAU/USD desde Gold-API cada 30 segundos y conserva el último valor recibido para el modo sin conexión.
 - `math.js`: fórmulas, redondeo, rangos de ley y tabla con las 50 leyes.
-- `sw.js`: caché `goldtrading-offline-v6`, con la nueva imagen precargada. Conserva la estrategia `cache-first` y elimina las cachés antiguas de Gold Trading al activarse.
-- `manifest.webmanifest`: instalación PWA `standalone` **sin modificaciones**.
-- `icons/`: iconos originales **sin modificaciones**.
+- `sw.js`: caché `goldtrading-offline-v7`, con la imagen y los iconos actualizados. Conserva la estrategia `cache-first` y elimina las cachés antiguas de Gold Trading al activarse.
+- `manifest.webmanifest`: instalación PWA `standalone` con los iconos actualizados.
+- `icons/`: iconos de la PWA creados desde el logo Banco de los Mineros.
 
-El diseño se encuentra en `index.html` y `styles.css`; el fondo está en `images/`. También se actualizaron la caché, su diagnóstico y las pruebas correspondientes. No se añadieron ventas, historial, registros, consultas, base de datos ni campos nuevos.
+El diseño se encuentra en `index.html` y `styles.css`; el fondo está en `images/`. También se actualizaron la caché, su diagnóstico y las referencias de versión de las pruebas existentes. No se añadieron ventas, historial, registros ni base de datos.
 
 ## Credenciales iniciales (si es una instalación nueva)
 
@@ -43,7 +43,7 @@ Cámbiala en Preferencias después del primer inicio de sesión. El bloqueo es l
 4. Abrir Gold Trading desde su ícono con internet. En Preferencias comprobar que el estado `Uso sin conexión` indique que los archivos estén preparados y revisar el resultado real de `Almacenamiento persistente`. El permiso persistente depende de iOS.
 5. Para la prueba física, activar modo avión, cerrar la app completamente y reabrirla. Confirmar acceso, ambas calculadoras y la tabla. Después, reiniciar el iPhone todavía en modo avión y repetir.
 
-**ACTUALIZACIÓN DE UNA INSTALACIÓN EXISTENTE:** publica también la carpeta `images/` y abre la aplicación con conexión para instalar el Service Worker con caché v6. Después vuelve a abrirla y comprueba el estado de uso sin conexión en Preferencias. La actualización no borra las preferencias ni el acceso local; evita borrar los datos del sitio si deseas conservarlos.
+**ACTUALIZACIÓN DE UNA INSTALACIÓN EXISTENTE:** publica los archivos actualizados y abre la aplicación con conexión para instalar el Service Worker con caché v7. Después vuelve a abrirla y comprueba el estado de uso sin conexión en Preferencias. La actualización no borra las preferencias ni el acceso local; evita borrar los datos del sitio si deseas conservarlos.
 
 ## Validación realizada
 
@@ -61,9 +61,9 @@ Las pruebas automatizadas no sustituyen la comprobación visual en Safari/iPhone
 3. `vercel.json` configura Build Command `node scripts/build.js` y Output Directory `public`. No se necesita instalar dependencias para compilar ni ejecutar la aplicación.
 4. Publicar y usar una URL HTTPS de producción estable. No usar como instalación definitiva una URL temporal de preview ni una URL que exija iniciar sesión en Vercel.
 5. El build publica únicamente los 10 archivos de la PWA. Las pruebas, la documentación, los scripts de desarrollo y `.vscode` quedan fuera del directorio publicado.
-6. Los encabezados permiten revalidar archivos al publicar; el Service Worker mantiene la ejecución offline desde la caché v6. En cada cambio futuro de recursos publicados, incrementar la versión de caché en `sw.js`, `app.js` y las pruebas correspondientes.
+6. Los encabezados permiten revalidar archivos al publicar; el Service Worker mantiene la ejecución offline desde la caché v7. En cada cambio futuro de recursos publicados, incrementar la versión de caché en `sw.js`, `app.js` y las pruebas correspondientes.
 
-El paquete actual ocupa aproximadamente 2,15 MB sin compresión HTTP. La imagen se descarga durante la preparación inicial; las siguientes aperturas pueden usar la caché local. No hay fuentes remotas, librerías de ejecución, analítica ni consultas de cotizaciones. Las cotizaciones se introducen manualmente y los cálculos se ejecutan en el dispositivo.
+La imagen y los archivos de la aplicación se descargan durante la preparación inicial; las siguientes aperturas pueden usar la caché local. No hay librerías de ejecución ni analítica. La conexión externa se utiliza únicamente para consultar el precio del oro; los cálculos se ejecutan en el dispositivo y siguen disponibles sin internet.
 
 ## Comprobación obligatoria en el iPhone de destino
 
