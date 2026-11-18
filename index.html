@@ -20,7 +20,7 @@
 <body>
   <main id="auth-view" class="auth-shell">
     <header class="auth-brand" aria-label="Gold Trading - Calculadora de tasación">
-      <div class="auth-monogram" aria-hidden="true">GT</div>
+      <img class="auth-monogram" src="./icons/icon-192.png" alt="Logo Banco de los Mineros" width="76" height="76">
       <p class="auth-wordmark">GOLD TRADING</p>
       <p class="auth-tagline">Calculadora de tasación</p>
       <span class="auth-rule" aria-hidden="true"></span>
@@ -58,7 +58,7 @@
         </div>
         <form id="calculator-form" novalidate>
           <div class="form-grid">
-            <div class="field"><label for="ounce">ONZA (USD)</label><div class="input-wrap"><span class="prefix">$</span><input id="ounce" name="ounce" type="text" inputmode="decimal" autocomplete="off" aria-describedby="form-error"></div></div>
+            <div class="field"><label for="ounce">ONZA (USD)</label><div class="input-wrap"><span class="prefix">$</span><input id="ounce" name="ounce" type="text" inputmode="decimal" autocomplete="off" aria-describedby="form-error ounce-status"></div><p class="gold-price-status" id="ounce-status" role="status" aria-live="polite" data-state="loading">Consultando precio automático…</p></div>
             <div class="field"><label for="discount">PORCENTAJE (%)</label><div class="input-wrap"><input id="discount" name="discount" type="text" inputmode="decimal" autocomplete="off" aria-describedby="form-error"><span class="suffix">%</span></div></div>
             <div class="field"><label for="exchange">COT. DÓLAR (BOB)</label><div class="input-wrap"><span class="prefix">Bs</span><input id="exchange" name="exchange" type="text" inputmode="decimal" autocomplete="off" aria-describedby="form-error"></div></div>
             <div class="field"><label for="ley">LEY (50–99.99)</label><div class="input-wrap"><input id="ley" name="ley" type="text" inputmode="decimal" autocomplete="off" aria-describedby="form-error"></div></div>
@@ -97,10 +97,10 @@
     <div id="settings-view" hidden>
       <section class="settings-card" aria-labelledby="settings-title">
         <div class="section-heading"><div><p class="eyebrow">CONFIGURACIÓN</p><h1 id="settings-title">Preferencias y valores por defecto</h1></div><span class="gold-bar" aria-hidden="true"></span></div>
-        <p class="settings-description">Estos valores se aplicarán automáticamente al abrir la calculadora y al limpiarla.</p>
+        <p class="settings-description">El precio de la onza se actualiza en línea; este valor queda como respaldo junto con el dólar y el porcentaje.</p>
         <form id="preferences-form" novalidate>
           <div class="settings-grid">
-            <div class="field"><label for="setting-ounce">ONZA USD</label><div class="input-wrap"><input id="setting-ounce" type="text" inputmode="decimal" autocomplete="off"></div><p class="field-help">Precio internacional de la onza troy en dólares americanos.</p></div>
+            <div class="field"><label for="setting-ounce">ONZA USD</label><div class="input-wrap"><input id="setting-ounce" type="text" inputmode="decimal" autocomplete="off"></div><p class="field-help">Se usa si no hay una cotización automática guardada en el dispositivo.</p></div>
             <div class="field"><label for="setting-exchange">COT. DÓLAR (BOB)</label><div class="input-wrap"><input id="setting-exchange" type="text" inputmode="decimal" autocomplete="off"></div><p class="field-help">Tipo de cambio local (Bs por 1 USD) para calcular los precios.</p></div>
             <div class="field"><label for="setting-percentage">PORCENTAJE (%)</label><div class="input-wrap"><input id="setting-percentage" type="text" inputmode="decimal" autocomplete="off"></div><p class="field-help">Porcentaje aplicado al cálculo; 0 % no descuenta el valor.</p></div>
           </div>
