@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#071d3c">
-  <meta name="color-scheme" content="light">
+  <meta name="theme-color" content="#071d3c" id="theme-color-meta">
+  <meta name="color-scheme" content="light dark">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Gold Trading">
@@ -56,6 +56,10 @@
           <div><p class="eyebrow">TASACIÓN DE ORO</p><h1 id="calculator-heading">Calculadora</h1></div>
           <span class="section-icon" aria-hidden="true"><svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v18M6 21h12M4 7h16M6 7 3 13h6L6 7Zm12 0-3 6h6l-3-6ZM12 3a2 2 0 1 0 0 4"/></svg></span>
         </div>
+        <section class="quote-panel" aria-label="Cotización compartida del oro">
+          <div><span class="quote-caption">Cotización real · Gold-API</span><strong id="real-quote-main">—</strong><span class="quote-updated" id="quote-updated-main">Esperando cotización</span></div>
+          <div class="simulated-quote"><span class="quote-caption">Simulación visual</span><strong id="visual-quote-main">—</strong><span class="simulation-tag">SOLO VISUAL · NO USAR EN CÁLCULOS</span></div>
+        </section>
         <form id="calculator-form" novalidate>
           <div class="form-grid">
             <div class="field"><label for="ounce">ONZA (USD)</label><div class="input-wrap"><span class="prefix">$</span><input id="ounce" name="ounce" type="text" inputmode="decimal" autocomplete="off" aria-describedby="form-error ounce-status"></div><p class="gold-price-status" id="ounce-status" role="status" aria-live="polite" data-state="loading">Consultando precio automático…</p></div>
@@ -81,6 +85,10 @@
           <div><p class="eyebrow">TABLA DE COTIZACIÓN</p><h2 id="reference-heading">Calculadora por ley</h2><span class="reference-underline" aria-hidden="true"></span><p class="reference-description">Precios por gramo · leyes del 99 al 50</p></div>
           <span class="section-icon" aria-hidden="true"><svg class="ui-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="3.5" y="13" width="4.4" height="7" rx=".7"/><rect x="9.8" y="9" width="4.4" height="11" rx=".7"/><rect x="16.1" y="4" width="4.4" height="16" rx=".7"/></svg></span>
         </div>
+        <section class="quote-panel quote-panel-reference" aria-label="Cotización compartida del oro">
+          <div><span class="quote-caption">Cotización real · Gold-API</span><strong id="real-quote-reference">—</strong><span class="quote-updated" id="quote-updated-reference">Esperando cotización</span></div>
+          <div class="simulated-quote"><span class="quote-caption">Simulación visual</span><strong id="visual-quote-reference">—</strong><span class="simulation-tag">SOLO VISUAL · NO USAR EN CÁLCULOS</span></div>
+        </section>
         <form id="reference-form" novalidate>
           <div class="form-grid reference-input-grid">
             <div class="field"><label for="reference-exchange">COT. DÓLAR (BOB)</label><div class="input-wrap"><span class="prefix">Bs</span><input id="reference-exchange" type="text" inputmode="decimal" autocomplete="off" aria-describedby="reference-error"></div></div>
@@ -124,6 +132,7 @@
         </form>
       </section>
       <section class="settings-card settings-utility" aria-label="Sesión y uso sin conexión">
+        <div class="theme-setting"><div><strong>Apariencia</strong><span>Elige un tema o sigue el sistema</span></div><label for="theme-choice">Tema</label><select id="theme-choice"><option value="system">Sistema</option><option value="light">Claro</option><option value="dark">Oscuro</option></select></div>
         <div class="storage-status"><span>Uso sin conexión</span><strong id="offline-status">Preparando archivos…</strong></div>
         <div class="storage-status"><span>Almacenamiento persistente</span><strong id="persistence-status">Comprobando…</strong></div>
         <button id="logout-btn" type="button" class="logout-btn">CERRAR SESIÓN</button>
