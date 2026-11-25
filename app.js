@@ -17,8 +17,9 @@
   let settings = readPreferences();
   let liveGoldQuote = readCachedGoldQuote();
   let goldQuoteTimer = null;
+  let goldQuoteCycleTimer = null;
+  let goldQuoteCycleSimulated = false;
   let goldQuoteInFlight = false;
-  let goldQuotePendingForInput = false;
 
   function showMessage(errorId, message, successId) {
     const error = $(errorId);
@@ -95,15 +96,43 @@
       ? `Gold-API · actualizado ${formatQuoteTime(liveGoldQuote.updatedAt)}`
       : `Último dato de Gold-API · ${formatQuoteTime(liveGoldQuote.updatedAt)}`, recent ? 'live' : 'stale');
   }
+  function applyGoldPrice(price) {
+    $('ounce').value = toFieldNumber(price);
+    $('reference-ounce').value = toFieldNumber(price);
+    calculateMain();
+    calculateReference();
+  }
   function applyLiveGoldQuote() {
     if (!isAuthenticated || !liveGoldQuote) return;
-    if (document.activeElement === $('ounce')) {
-      goldQuotePendingForInput = true;
-      return;
+    goldQuoteCycleSimulated = false;
+    applyGoldPrice(liveGoldQuote.priceUSD);
+    startGoldQuoteCycle();
+  }
+  function stopGoldQuoteCycle(restoreOriginal = false) {
+    if (goldQuoteCycleTimer) clearTimeout(goldQuoteCycleTimer);
+    goldQuoteCycleTimer = null;
+    if (restoreOriginal && liveGoldQuote && goldQuoteCycleSimulated) {
+      goldQuoteCycleSimulated = false;
+      applyGoldPrice(liveGoldQuote.priceUSD);
     }
-    $('ounce').value = toFieldNumber(liveGoldQuote.priceUSD);
-    calculateMain();
-    goldQuotePendingForInput = false;
+  }
+  function startGoldQuoteCycle() {
+    stopGoldQuoteCycle();
+    if (!isAuthenticated || !liveGoldQuote || !navigator.onLine || document.visibilityState !== 'visible') return;
+    goldQuoteCycleTimer = setTimeout(() => {
+      goldQuoteCycleTimer = null;
+      if (!isAuthenticated || !liveGoldQuote || !navigator.onLine || document.visibilityState !== 'visible') return;
+      if (goldQuoteCycleSimulated) {
+        goldQuoteCycleSimulated = false;
+        applyGoldPrice(liveGoldQuote.priceUSD);
+      } else {
+        const cents = 10 + Math.floor(Math.random() * 91);
+        const direction = Math.random() < 0.5 ? -1 : 1;
+        goldQuoteCycleSimulated = true;
+        applyGoldPrice(Math.round((liveGoldQuote.priceUSD + direction * cents / 100) * 100) / 100);
+      }
+      startGoldQuoteCycle();
+    }, 2000);
   }
   async function refreshGoldQuote() {
     if (!isAuthenticated || document.visibilityState !== 'visible' || goldQuoteInFlight) return;
@@ -137,6 +166,7 @@
     stopGoldQuotePolling();
     renderGoldQuoteStatus(liveGoldQuote ? 'ready' : 'loading');
     refreshGoldQuote();
+    startGoldQuoteCycle();
     goldQuoteTimer = setInterval(refreshGoldQuote, GOLD_QUOTE_REFRESH_MS);
   }
   function stopGoldQuotePolling() {
@@ -150,7 +180,7 @@
     $('exchange').value = toFieldNumber(settings.exchangeRate);
     $('ley').value = '99';
     // La tabla tiene entradas independientes, pero parte de los mismos valores predeterminados.
-    $('reference-ounce').value = toFieldNumber(settings.ounceUSD);
+    $('reference-ounce').value = toFieldNumber(liveGoldQuote ? liveGoldQuote.priceUSD : settings.ounceUSD);
     $('reference-discount').value = toFieldNumber(settings.discount);
     $('reference-exchange').value = toFieldNumber(settings.exchangeRate);
     $('reference-ley').value = '99';
@@ -191,6 +221,7 @@
   function logout() {
     isAuthenticated = false;
     stopGoldQuotePolling();
+    stopGoldQuoteCycle();
     $('app-view').hidden = true;
     $('auth-view').hidden = false;
     $('password').value = '';
@@ -321,8 +352,6 @@
     event.preventDefault(); calculateMain(true); document.activeElement?.blur?.();
   });
   $('calculator-form').addEventListener('input', () => calculateMain(false));
-  $('ounce').addEventListener('input', () => { goldQuotePendingForInput = false; });
-  $('ounce').addEventListener('blur', () => { if (goldQuotePendingForInput) applyLiveGoldQuote(); });
   $('reset-btn').addEventListener('click', () => { applyPreferencesToInputs(); document.activeElement?.blur?.(); });
 
   // Tabla Windows: cinco bloques por diez leyes, construidos UNA vez.
@@ -446,10 +475,26 @@
   }
   window.addEventListener('load', prepareOffline);
   window.addEventListener('online', prepareOffline);
-  window.addEventListener('online', () => { if (isAuthenticated) refreshGoldQuote(); });
-  window.addEventListener('offline', () => { if (isAuthenticated) renderGoldQuoteStatus(); });
+  window.addEventListener('online', () => {
+    if (isAuthenticated) {
+      startGoldQuoteCycle();
+      refreshGoldQuote();
+    }
+  });
+  window.addEventListener('offline', () => {
+    if (isAuthenticated) {
+      stopGoldQuoteCycle(true);
+      renderGoldQuoteStatus();
+    }
+  });
   document.addEventListener('visibilitychange', () => {
-    if (isAuthenticated && document.visibilityState === 'visible') refreshGoldQuote();
+    if (!isAuthenticated) return;
+    if (document.visibilityState === 'visible') {
+      refreshGoldQuote();
+      startGoldQuoteCycle();
+    } else {
+      stopGoldQuoteCycle(true);
+    }
   });
   window.addEventListener('pageshow', event => { if (event.persisted) prepareOffline(); });
   if ('serviceWorker' in navigator) {
