@@ -1,5 +1,5 @@
 /* Gold Trading v5: la calculadora funciona offline y actualiza el oro al conectarse. */
-const CACHE_VERSION = 'goldtrading-offline-v7';
+const CACHE_VERSION = 'goldtrading-offline-v8';
 const OFFLINE_FILES = [
   './', './index.html', './styles.css', './math.js', './app.js',
   './images/results-gold.png', './manifest.webmanifest', './icons/icon-192.png', './icons/icon-512.png',
