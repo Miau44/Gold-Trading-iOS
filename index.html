@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#071d3c" id="theme-color-meta">
-  <meta name="color-scheme" content="light dark">
+  <meta name="theme-color" content="#071d3c">
+  <meta name="color-scheme" content="light">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Gold Trading">
@@ -56,10 +56,9 @@
           <div><p class="eyebrow">TASACIÓN DE ORO</p><h1 id="calculator-heading">Calculadora</h1></div>
           <span class="section-icon" aria-hidden="true"><svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v18M6 21h12M4 7h16M6 7 3 13h6L6 7Zm12 0-3 6h6l-3-6ZM12 3a2 2 0 1 0 0 4"/></svg></span>
         </div>
-        <p class="quote-connectivity" id="quote-connectivity" role="status" aria-live="polite" hidden></p>
         <form id="calculator-form" novalidate>
           <div class="form-grid">
-            <div class="field"><label for="ounce">ONZA (USD) <span class="quote-state" id="quote-state" hidden>Simulado</span></label><div class="input-wrap"><span class="prefix">$</span><input id="ounce" name="ounce" type="text" inputmode="decimal" autocomplete="off" aria-describedby="form-error"></div></div>
+            <div class="field"><label for="ounce">ONZA (USD)</label><div class="input-wrap"><span class="prefix">$</span><input id="ounce" name="ounce" type="text" inputmode="decimal" autocomplete="off" aria-describedby="form-error ounce-status"></div><p class="gold-price-status" id="ounce-status" role="status" aria-live="polite" data-state="loading">Consultando precio automático…</p></div>
             <div class="field"><label for="discount">PORCENTAJE (%)</label><div class="input-wrap"><input id="discount" name="discount" type="text" inputmode="decimal" autocomplete="off" aria-describedby="form-error"><span class="suffix">%</span></div></div>
             <div class="field"><label for="exchange">COT. DÓLAR (BOB)</label><div class="input-wrap"><span class="prefix">Bs</span><input id="exchange" name="exchange" type="text" inputmode="decimal" autocomplete="off" aria-describedby="form-error"></div></div>
             <div class="field"><label for="ley">LEY (50–99.99)</label><div class="input-wrap"><input id="ley" name="ley" type="text" inputmode="decimal" autocomplete="off" aria-describedby="form-error"></div></div>
@@ -125,7 +124,6 @@
         </form>
       </section>
       <section class="settings-card settings-utility" aria-label="Sesión y uso sin conexión">
-        <div class="theme-setting"><div><strong>Apariencia</strong><span>Elige un tema o sigue el sistema</span></div><label for="theme-choice">Tema</label><select id="theme-choice"><option value="system">Sistema</option><option value="light">Claro</option><option value="dark">Oscuro</option></select></div>
         <div class="storage-status"><span>Uso sin conexión</span><strong id="offline-status">Preparando archivos…</strong></div>
         <div class="storage-status"><span>Almacenamiento persistente</span><strong id="persistence-status">Comprobando…</strong></div>
         <button id="logout-btn" type="button" class="logout-btn">CERRAR SESIÓN</button>

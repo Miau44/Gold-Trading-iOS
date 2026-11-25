@@ -21,24 +21,24 @@ vm.runInNewContext(js,{self,caches,URL,Promise,Request:class {constructor(url,op
 (async()=>{
  let pending;
  listeners.install({waitUntil:p=>pending=p});await pending;
- assert.equal((await caches.keys())[0],'goldtrading-offline-v9');
- const cache=await caches.open('goldtrading-offline-v9');
+ assert.equal((await caches.keys())[0],'goldtrading-offline-v7');
+ const cache=await caches.open('goldtrading-offline-v7');
  const unrelated=await caches.open('other-app');
  unrelated.map.set(norm('index.html'),'incorrect-cache');
  // La lectura debe usar únicamente la caché de esta versión.
- const current=stores.get('goldtrading-offline-v9');
- stores.delete('goldtrading-offline-v9');
- stores.set('goldtrading-offline-v9',current);
+ const current=stores.get('goldtrading-offline-v7');
+ stores.delete('goldtrading-offline-v7');
+ stores.set('goldtrading-offline-v7',current);
  for(const file of ['index.html','styles.css','math.js','app.js','images/results-gold.png','manifest.webmanifest','icons/icon-192.png']) assert.ok(await cache.match(file),file);
  let response;
  listeners.fetch({request:{method:'GET',url:base+'index.html',mode:'navigate'},respondWith:p=>response=p});
  assert.equal(await response,'local:./index.html');
  listeners.fetch({request:{method:'GET',url:base+'sin-ruta',mode:'navigate'},respondWith:p=>response=p});
  assert.equal(await response,'local:./index.html');
- await caches.open('goldtrading-offline-v8');
+ await caches.open('goldtrading-offline-v5');
  listeners.activate({waitUntil:p=>pending=p});await pending;
- assert.ok(!(await caches.keys()).includes('goldtrading-offline-v8'));
+ assert.ok(!(await caches.keys()).includes('goldtrading-offline-v5'));
  assert.ok((await caches.keys()).includes('other-app'));
  assert.equal((await caches.keys()).length,2);
- console.log('SW OK: precache local, navegacion revalidada en red y fallback offline');
+ console.log('SW OK: precache local, navegacion cache-first y fallback offline');
 })().catch(e=>{console.error(e);process.exit(1)});

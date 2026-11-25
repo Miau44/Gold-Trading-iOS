@@ -8,8 +8,6 @@
   const GOLD_QUOTE_KEY = 'goldtrading.gold-spot.v1';
   const GOLD_QUOTE_URL = 'https://api.gold-api.com/price/XAU';
   const GOLD_QUOTE_REFRESH_MS = 30000;
-  const GOLD_QUOTE_CYCLE_MS = 2000;
-  const THEME_KEY = 'goldtrading.theme.v1';
   const ACCOUNT_KEY = 'goldtrading.account.v3';
   const DEFAULT_PREFS = Object.freeze({ ounceUSD: 2000, exchangeRate: 6.96, discount: 0 });
   const INITIAL_USER = 'admin';
@@ -20,26 +18,7 @@
   let liveGoldQuote = readCachedGoldQuote();
   let goldQuoteTimer = null;
   let goldQuoteInFlight = false;
-  let goldQuoteUpdateFailed = false;
-  let goldQuoteCycleTimer = null;
-  let activeGoldPrice = liveGoldQuote ? liveGoldQuote.priceUSD : null;
-  let activeQuoteIsSimulated = false;
-  let themePreference = readThemePreference();
-  const systemDark = window.matchMedia?.('(prefers-color-scheme: dark)');
-
-  function readThemePreference() {
-    try { const saved = localStorage.getItem(THEME_KEY); return ['system','light','dark'].includes(saved) ? saved : 'system'; }
-    catch (_) { return 'system'; }
-  }
-  function applyTheme() {
-    const dark = themePreference === 'dark' || (themePreference === 'system' && systemDark?.matches);
-    document.documentElement.dataset.theme = dark ? 'dark' : 'light';
-    const meta = $('theme-color-meta');
-    if (meta) meta.content = dark ? '#171c24' : '#f8fafc';
-    if ($('theme-choice')) $('theme-choice').value = themePreference;
-  }
-  applyTheme();
-  systemDark?.addEventListener?.('change', () => { if (themePreference === 'system') applyTheme(); });
+  let goldQuotePendingForInput = false;
 
   function showMessage(errorId, message, successId) {
     const error = $(errorId);
@@ -78,61 +57,53 @@
       return quote;
     } catch (_) { return null; }
   }
-  function renderGoldQuote() {
-    $('quote-state').hidden = !activeQuoteIsSimulated;
-    $('quote-connectivity').hidden = navigator.onLine && !goldQuoteUpdateFailed && Boolean(liveGoldQuote);
-    if (goldQuoteUpdateFailed && navigator.onLine) $('quote-connectivity').textContent = 'Cotización sin actualizar';
-    else if (navigator.onLine && !liveGoldQuote) $('quote-connectivity').textContent = 'Esperando cotización';
+  function formatQuoteTime(updatedAt) {
+    return new Date(updatedAt).toLocaleString('es-BO', {
+      day:'2-digit', month:'short', hour:'2-digit', minute:'2-digit', second:'2-digit'
+    });
   }
-  function applyActiveGoldPrice() {
-    if (activeGoldPrice !== null) {
-      $('ounce').value = toFieldNumber(activeGoldPrice);
-      $('reference-ounce').value = toFieldNumber(activeGoldPrice);
-      $('ounce').readOnly = true;
-      $('reference-ounce').readOnly = true;
-    }
-    renderGoldQuote();
-    calculateMain();
-    calculateReference();
+  function setGoldQuoteStatus(message, state) {
+    const status = $('ounce-status');
+    if (!status) return;
+    status.textContent = message;
+    status.dataset.state = state;
   }
-  function tickGoldQuoteCycle() {
-    if (!isAuthenticated || !navigator.onLine || document.visibilityState !== 'visible' || !liveGoldQuote ||
-      Date.now() - Date.parse(liveGoldQuote.updatedAt) > 60000) {
-      stopGoldQuoteCycle();
-      activeGoldPrice = liveGoldQuote ? liveGoldQuote.priceUSD : null;
-      activeQuoteIsSimulated = false;
-      applyActiveGoldPrice();
+  function renderGoldQuoteStatus(reason = 'ready') {
+    if (!navigator.onLine) {
+      setGoldQuoteStatus(liveGoldQuote
+        ? `Sin internet · último precio guardado ${formatQuoteTime(liveGoldQuote.updatedAt)}`
+        : 'Sin internet · usando el valor guardado en Preferencias', 'offline');
       return;
     }
-    if (activeQuoteIsSimulated) {
-      activeGoldPrice = liveGoldQuote.priceUSD;
-      activeQuoteIsSimulated = false;
-    } else {
-      const cents = 1 + Math.floor(Math.random() * 100);
-      const direction = Math.random() < 0.5 ? -1 : 1;
-      activeGoldPrice = Math.round((liveGoldQuote.priceUSD + direction * cents / 100) * 100) / 100;
-      activeQuoteIsSimulated = true;
+    if (reason === 'loading' && !liveGoldQuote) {
+      setGoldQuoteStatus('Consultando precio automático…', 'loading');
+      return;
     }
-    applyActiveGoldPrice();
-  }
-  function startGoldQuoteCycle() {
-    stopGoldQuoteCycle();
-    activeGoldPrice = liveGoldQuote ? liveGoldQuote.priceUSD : null;
-    activeQuoteIsSimulated = false;
-    applyActiveGoldPrice();
-    if (navigator.onLine && document.visibilityState === 'visible' && liveGoldQuote) {
-      goldQuoteCycleTimer = setInterval(tickGoldQuoteCycle, GOLD_QUOTE_CYCLE_MS);
+    if (reason === 'error') {
+      setGoldQuoteStatus(liveGoldQuote
+        ? `Gold-API no responde · último precio ${formatQuoteTime(liveGoldQuote.updatedAt)}`
+        : 'Gold-API no responde · usando el valor de Preferencias', liveGoldQuote ? 'stale' : 'fallback');
+      return;
     }
+    if (!liveGoldQuote) {
+      setGoldQuoteStatus('Se usará el valor guardado en Preferencias hasta recibir una cotización.', 'fallback');
+      return;
+    }
+    const ageMs = Date.now() - Date.parse(liveGoldQuote.updatedAt);
+    const recent = ageMs >= -120000 && ageMs <= 120000;
+    setGoldQuoteStatus(recent
+      ? `Gold-API · actualizado ${formatQuoteTime(liveGoldQuote.updatedAt)}`
+      : `Último dato de Gold-API · ${formatQuoteTime(liveGoldQuote.updatedAt)}`, recent ? 'live' : 'stale');
   }
-  function stopGoldQuoteCycle() { if (goldQuoteCycleTimer) clearInterval(goldQuoteCycleTimer); goldQuoteCycleTimer = null; }
-  function renderGoldQuoteStatus(reason = 'ready') {
-    renderGoldQuote();
-    const status = $('quote-connectivity');
-    status.hidden = navigator.onLine && reason !== 'error' && Boolean(liveGoldQuote);
-    if (!navigator.onLine) status.textContent = liveGoldQuote
-      ? 'Sin actualizar · última cotización guardada'
-      : 'Sin actualizar · valor guardado en Preferencias';
-    else if (reason === 'error') status.textContent = 'Cotización sin actualizar';
+  function applyLiveGoldQuote() {
+    if (!isAuthenticated || !liveGoldQuote) return;
+    if (document.activeElement === $('ounce')) {
+      goldQuotePendingForInput = true;
+      return;
+    }
+    $('ounce').value = toFieldNumber(liveGoldQuote.priceUSD);
+    calculateMain();
+    goldQuotePendingForInput = false;
   }
   async function refreshGoldQuote() {
     if (!isAuthenticated || document.visibilityState !== 'visible' || goldQuoteInFlight) return;
@@ -151,15 +122,11 @@
       if ((data?.symbol && data.symbol !== 'XAU') || !Number.isFinite(price) || price <= 0 ||
         !Number.isFinite(updatedAt.getTime())) throw new Error('Cotización XAU inválida');
       liveGoldQuote = {priceUSD:Math.round(price * 100) / 100, updatedAt:updatedAt.toISOString()};
-      goldQuoteUpdateFailed = false;
       try { localStorage.setItem(GOLD_QUOTE_KEY, JSON.stringify(liveGoldQuote)); }
       catch (err) { console.warn('[Gold Trading] No se pudo guardar la última cotización:', err); }
-      activeGoldPrice = liveGoldQuote.priceUSD;
-      activeQuoteIsSimulated = false;
-      if (isAuthenticated) { applyActiveGoldPrice(); startGoldQuoteCycle(); }
+      applyLiveGoldQuote();
       renderGoldQuoteStatus();
     } catch (_) {
-      goldQuoteUpdateFailed = true;
       renderGoldQuoteStatus('error');
     } finally {
       clearTimeout(timeout);
@@ -171,25 +138,19 @@
     renderGoldQuoteStatus(liveGoldQuote ? 'ready' : 'loading');
     refreshGoldQuote();
     goldQuoteTimer = setInterval(refreshGoldQuote, GOLD_QUOTE_REFRESH_MS);
-    startGoldQuoteCycle();
   }
   function stopGoldQuotePolling() {
     if (goldQuoteTimer) clearInterval(goldQuoteTimer);
     goldQuoteTimer = null;
-    stopGoldQuoteCycle();
   }
   function toFieldNumber(n) { return String(n).replace('.', ','); }
   function applyPreferencesToInputs() {
-    activeGoldPrice = liveGoldQuote ? liveGoldQuote.priceUSD : null;
-    activeQuoteIsSimulated = false;
-    $('ounce').value = toFieldNumber(activeGoldPrice !== null ? activeGoldPrice : settings.ounceUSD);
-    $('ounce').readOnly = Boolean(liveGoldQuote);
+    $('ounce').value = toFieldNumber(liveGoldQuote ? liveGoldQuote.priceUSD : settings.ounceUSD);
     $('discount').value = toFieldNumber(settings.discount);
     $('exchange').value = toFieldNumber(settings.exchangeRate);
     $('ley').value = '99';
     // La tabla tiene entradas independientes, pero parte de los mismos valores predeterminados.
-    $('reference-ounce').value = toFieldNumber(activeGoldPrice !== null ? activeGoldPrice : settings.ounceUSD);
-    $('reference-ounce').readOnly = Boolean(liveGoldQuote);
+    $('reference-ounce').value = toFieldNumber(settings.ounceUSD);
     $('reference-discount').value = toFieldNumber(settings.discount);
     $('reference-exchange').value = toFieldNumber(settings.exchangeRate);
     $('reference-ley').value = '99';
@@ -287,12 +248,6 @@
     } finally { button.disabled = false; }
   });
   $('logout-btn').addEventListener('click', logout);
-  $('theme-choice').addEventListener('change', event => {
-    themePreference = event.target.value;
-    try { localStorage.setItem(THEME_KEY, themePreference); }
-    catch (_) { showMessage('preferences-error', 'No se pudo guardar el tema en este dispositivo.'); }
-    applyTheme();
-  });
   $('nav-calculator').addEventListener('click', () => { if (isAuthenticated) setView('calculator'); });
   $('nav-settings').addEventListener('click', () => { if (isAuthenticated) setView('settings'); });
 
@@ -349,7 +304,7 @@
   // Calculadora principal: SOLO precio por gramo, sin peso ni totales de compras.
   function readMain() {
     return {
-      ounceUSD: activeGoldPrice !== null ? activeGoldPrice : GoldMath.parseNumber($('ounce').value),
+      ounceUSD: GoldMath.parseNumber($('ounce').value),
       discount: GoldMath.parseNumber($('discount').value),
       exchangeRate: GoldMath.parseNumber($('exchange').value),
       ley: GoldMath.parseNumber($('ley').value)
@@ -366,6 +321,8 @@
     event.preventDefault(); calculateMain(true); document.activeElement?.blur?.();
   });
   $('calculator-form').addEventListener('input', () => calculateMain(false));
+  $('ounce').addEventListener('input', () => { goldQuotePendingForInput = false; });
+  $('ounce').addEventListener('blur', () => { if (goldQuotePendingForInput) applyLiveGoldQuote(); });
   $('reset-btn').addEventListener('click', () => { applyPreferencesToInputs(); document.activeElement?.blur?.(); });
 
   // Tabla Windows: cinco bloques por diez leyes, construidos UNA vez.
@@ -408,8 +365,7 @@
   }
   function calculateReference() {
     const data = {};
-    for (const [key, field] of Object.entries(refInputs)) data[key] = key === 'ounceUSD' && activeGoldPrice !== null
-      ? activeGoldPrice : GoldMath.parseNumber(field.value);
+    for (const [key, field] of Object.entries(refInputs)) data[key] = GoldMath.parseNumber(field.value);
     const leyValid = data.ley !== null && data.ley >= 50 && data.ley <= 99.99;
     const prices = leyValid ? GoldMath.referencePrices(data) : null;
     for (let i = 0; i < 50; i++) {
@@ -446,7 +402,7 @@
       './images/results-gold.png', './manifest.webmanifest',
       './icons/icon-192.png', './icons/icon-512.png', './icons/apple-touch-icon.png'
     ];
-    const cacheName = 'goldtrading-offline-v9';
+    const cacheName = 'goldtrading-offline-v7';
     if (!(await caches.keys()).includes(cacheName)) {
       $('offline-status').textContent = 'Descarga inicial pendiente';
       return false;
@@ -491,24 +447,11 @@
   window.addEventListener('load', prepareOffline);
   window.addEventListener('online', prepareOffline);
   window.addEventListener('online', () => { if (isAuthenticated) refreshGoldQuote(); });
-  window.addEventListener('offline', () => {
-    stopGoldQuoteCycle();
-    if (liveGoldQuote) { activeGoldPrice = liveGoldQuote.priceUSD; activeQuoteIsSimulated = false; }
-    if (isAuthenticated) { applyActiveGoldPrice(); renderGoldQuoteStatus(); }
-  });
-  window.addEventListener('online', () => { if (isAuthenticated && document.visibilityState === 'visible') startGoldQuoteCycle(); });
+  window.addEventListener('offline', () => { if (isAuthenticated) renderGoldQuoteStatus(); });
   document.addEventListener('visibilitychange', () => {
-    if (!isAuthenticated) return;
-    if (document.visibilityState === 'visible') startGoldQuotePolling();
-    else stopGoldQuotePolling();
-    renderGoldQuote();
+    if (isAuthenticated && document.visibilityState === 'visible') refreshGoldQuote();
   });
-  window.addEventListener('pageshow', event => {
-    if (event.persisted) {
-      prepareOffline();
-      if (isAuthenticated && document.visibilityState === 'visible') startGoldQuotePolling();
-    }
-  });
+  window.addEventListener('pageshow', event => { if (event.persisted) prepareOffline(); });
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.addEventListener('controllerchange', () => {
       refreshOfflineStatus().catch(() => { $('offline-status').textContent = 'No se pudo preparar'; });

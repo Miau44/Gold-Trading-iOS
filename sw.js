@@ -1,5 +1,5 @@
 /* Gold Trading v5: la calculadora funciona offline y actualiza el oro al conectarse. */
-const CACHE_VERSION = 'goldtrading-offline-v9';
+const CACHE_VERSION = 'goldtrading-offline-v7';
 const OFFLINE_FILES = [
   './', './index.html', './styles.css', './math.js', './app.js',
   './images/results-gold.png', './manifest.webmanifest', './icons/icon-192.png', './icons/icon-512.png',
@@ -21,15 +21,9 @@ self.addEventListener('fetch', event => {
   if (request.method !== 'GET') return;
   const url = new URL(request.url);
   if (url.origin !== self.location.origin) return;
-  event.respondWith(caches.open(CACHE_VERSION).then(async cache => {
-    const cached = await cache.match(request, {ignoreSearch:true});
-    if (request.mode === 'navigate') {
-      try {
-        const fresh = await fetch(request, {cache:'no-store'});
-        if (fresh.ok) { cache.put('./index.html', fresh.clone()); return fresh; }
-      } catch (_) {}
-      return cached || cache.match('./index.html');
-    }
-    return cached || fetch(request);
-  }));
+  event.respondWith(caches.open(CACHE_VERSION).then(cache => cache.match(request, {ignoreSearch:true}).then(cached => {
+    if (cached) return cached;
+    if (request.mode === 'navigate') return cache.match('./index.html').then(index => index || fetch(request));
+    return fetch(request);
+  })));
 });
