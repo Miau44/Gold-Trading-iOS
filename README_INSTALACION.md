@@ -1,6 +1,6 @@
-# Gold Trading PWA v6 - Cotización segura, alto contraste y modo oscuro
+# Gold Trading PWA v7 - Cotización activa y alto contraste
 
-Esta entrega actualiza la PWA existente sin cambiar `math.js` ni sus fórmulas financieras. Gold-API se consulta cada 30 segundos; el último precio real se guarda localmente para operar sin conexión. La variación cada 2 segundos es solo visual, se etiqueta de forma explícita y nunca alimenta los cálculos.
+Esta entrega actualiza la PWA existente sin cambiar `math.js` ni sus fórmulas comerciales. Gold-API se consulta cada 30 segundos; el último precio real se guarda localmente para operar sin conexión. El campo ONZA de cada calculadora alterna cada 2 segundos entre la cotización auténtica y una variación calculada desde esa base. No se muestra una tarjeta aparte para la cotización. Las dos calculadoras y sus resultados utilizan el mismo valor activo.
 
 ## Cambios visuales
 
@@ -13,9 +13,9 @@ Esta entrega actualiza la PWA existente sin cambiar `math.js` ni sus fórmulas f
 
 ## Archivos y funcionamiento
 
-- `app.js`: una sola fuente comparte la cotización real entre ambas calculadoras. Los campos de onza quedan vinculados a la última cotización real disponible; una simulación de ±USD 0,01–1,00 aparece en paneles separados y solo cuando hay conexión, la app está visible y el dato real tiene menos de 60 segundos.
+- `app.js`: una cotización activa compartida actualiza los campos de ONZA en ambas calculadoras y vuelve a ejecutar los cálculos cada vez que cambia. La etiqueta discreta `Simulado` aparece junto al campo principal solo en los intervalos artificiales. Sin internet conserva el último precio real, indica que está sin actualizar y deja la simulación suspendida.
 - `math.js`: fórmulas, redondeo, rangos de ley y tabla con las 50 leyes.
-- `sw.js`: caché `goldtrading-offline-v8`. La navegación revalida la página en red y usa la copia local sin conexión; los recursos se preparan antes de activar el Service Worker nuevo y se eliminan las cachés antiguas de Gold Trading.
+- `sw.js`: caché `goldtrading-offline-v9`. La navegación revalida la página en red y usa la copia local sin conexión; los recursos se preparan antes de activar el Service Worker nuevo y se eliminan las cachés antiguas de Gold Trading.
 - `manifest.webmanifest`: instalación PWA `standalone` con los iconos actualizados.
 - `icons/`: iconos de la PWA creados desde el logo Banco de los Mineros.
 
@@ -44,7 +44,7 @@ Cámbiala en Preferencias después del primer inicio de sesión. El bloqueo es l
 4. Abrir Gold Trading desde su ícono con internet. En Preferencias comprobar que el estado `Uso sin conexión` indique que los archivos estén preparados y revisar el resultado real de `Almacenamiento persistente`. El permiso persistente depende de iOS.
 5. Para la prueba física, activar modo avión, cerrar la app completamente y reabrirla. Confirmar acceso, ambas calculadoras y la tabla. Después, reiniciar el iPhone todavía en modo avión y repetir.
 
-**ACTUALIZACIÓN DE UNA INSTALACIÓN EXISTENTE:** publica los archivos actualizados y abre la PWA con conexión. El navegador instala el Service Worker v8, que activa la caché nueva tras precargar los archivos. Vuelve a abrirla y comprueba el estado de uso sin conexión en Preferencias. La actualización no borra las preferencias ni el acceso local; conserva los datos del sitio.
+**ACTUALIZACIÓN DE UNA INSTALACIÓN EXISTENTE:** publica los archivos actualizados y abre la PWA con conexión. El navegador instala el Service Worker v9, que activa la caché nueva tras precargar los archivos. Vuelve a abrirla y comprueba el estado de uso sin conexión en Preferencias. La actualización no borra las preferencias ni el acceso local; conserva los datos del sitio.
 
 ## Validación realizada
 
@@ -62,7 +62,7 @@ La prueba de navegador cubre cotización simulada mediante una respuesta Gold-AP
 3. `vercel.json` configura Build Command `node scripts/build.js` y Output Directory `public`. No se necesita instalar dependencias para compilar ni ejecutar la aplicación.
 4. Publicar y usar una URL HTTPS de producción estable. No usar como instalación definitiva una URL temporal de preview ni una URL que exija iniciar sesión en Vercel.
 5. El build publica únicamente los 10 archivos de la PWA. Las pruebas, la documentación, los scripts de desarrollo y `.vscode` quedan fuera del directorio publicado.
-6. Los encabezados permiten revalidar archivos al publicar; el Service Worker mantiene la ejecución offline desde la caché v8. En cada cambio futuro de recursos publicados, incrementar la versión de caché en `sw.js`, `app.js` y las pruebas correspondientes.
+6. Los encabezados permiten revalidar archivos al publicar; el Service Worker mantiene la ejecución offline desde la caché v9. En cada cambio futuro de recursos publicados, incrementar la versión de caché en `sw.js`, `app.js` y las pruebas correspondientes.
 
 La imagen y los archivos de la aplicación se descargan durante la preparación inicial; las siguientes aperturas pueden usar la caché local. No hay librerías de ejecución ni analítica. La conexión externa se utiliza únicamente para consultar el precio del oro; los cálculos se ejecutan en el dispositivo y siguen disponibles sin internet.
 
@@ -90,11 +90,11 @@ La actualización de la tabla de 50 leyes tuvo una mediana inferior a 1 ms en el
 
 ## Cambios de esta actualización
 
-- La simulación visual cambia cada dos segundos alrededor del último precio real, con separación explícita entre datos auténticos y estimados. Las dos calculadoras muestran la misma referencia; las fórmulas siguen usando el precio real guardado. Sin conexión, la simulación queda suspendida y se muestra la fecha de la última cotización real.
-- El temporizador visual solo corre mientras la PWA está visible y la cotización real recibida tiene menos de un minuto. La petición a Gold-API conserva su intervalo de 30 segundos.
-- El tema Sistema/Claro/Oscuro se conserva en el dispositivo. El Service Worker sube a v8 para instalar los recursos nuevos y eliminar cachés anteriores de esta PWA.
+- El precio activo alterna de forma determinista: base en el segundo 0, variación de ±USD 0,01–1,00 en el segundo 2, base exacta en el segundo 4. Cada variación usa el último precio auténtico como base, nunca la artificial anterior. La etiqueta `Simulado` desaparece al regresar a la base.
+- Tanto el campo ONZA de la calculadora como el de la tabla comparten el precio activo y son de solo lectura cuando hay cotización real. Sus fórmulas recalculan en cada alternancia. El temporizador se detiene en segundo plano, sin internet o cuando la última cotización ya tiene más de un minuto; Gold-API mantiene su intervalo de 30 segundos.
+- La apariencia ofrece Sistema/Claro/Oscuro y guarda la elección. Los temas usan fondo claro con texto negro o grafito `#171C24`, tarjetas `#252D38` y texto claro, con controles amarillos `#FFCC00` de texto negro. El Service Worker sube a v9 para instalar el HTML, CSS y código nuevos y eliminar cachés anteriores.
 
-En la validación de esta actualización, `node tests/test_math.js`, `node tests/test_package.js`, `node tests/test_sw.js` y `node tests/test_status.js` pasaron. La prueba automatizada de Chromium confirmó las dos cotizaciones sincronizadas, varios ciclos de simulación dentro de USD 1,00, fórmulas con la referencia real, modo oscuro persistente, suspensión offline y 10 archivos precargados. En esa sesión hubo una consulta a Gold-API en 6 segundos; la segunda consulta ocurrió únicamente al abrir un perfil nuevo. Playwright WebKit no completó el recorrido de prueba automatizada; Safari en iPhone y la URL de Vercel requieren comprobación en los dispositivos/entorno publicados.
+En la validación de esta actualización, `node tests/test_math.js`, `node tests/test_package.js`, `node tests/test_sw.js` y `node tests/test_status.js` pasaron. La prueba de Chromium fija la cotización base en USD 3.552,90 y comprueba el ciclo USD 3.552,90 → 3.553,28 → 3.552,90 → 3.551,90 → 3.552,90. Después simula una nueva respuesta auténtica de USD 3.600,50 y comprueba que la siguiente variación es USD 3.600,88. En cada paso ambas calculadoras recalculan con los campos de descuento, cotización del dólar y ley especificados. También verifica que no existe tarjeta de cotización separada ni línea de fuente/fecha, ambos temas, los anchos móviles/escritorio, la suspensión offline y la purga de v8 al activar v9. La sesión completa hizo cuatro consultas controladas: inicio, actualización auténtica solicitada por el test y apertura de dos perfiles nuevos; los ticks de 2 segundos no generaron solicitudes. Playwright WebKit no completó el recorrido automatizado; Safari en iPhone y la URL de Vercel deben comprobarse en sus dispositivos/entorno publicados.
 
 Para repetir la prueba de navegador en Windows, instalar Playwright fuera del proyecto y ejecutar con el servidor local de `public/` activo:
 
