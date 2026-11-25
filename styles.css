@@ -647,3 +647,13 @@ body:has(#app-view.dark-mode:not([hidden])) {background:#171c24}
 #app-view.dark-mode .success-message {background:#244532;color:#fff}
 #app-view.dark-mode .reset-btn,
 #app-view.dark-mode .logout-btn {background:#46515f;color:#fff}
+
+/* Mantener legibles los encabezados y campos de ambas calculadoras en modo oscuro. */
+#app-view.dark-mode #calculator-view .section-heading .eyebrow,
+#app-view.dark-mode #calculator-view .section-heading h1,
+#app-view.dark-mode #calculator-view .section-heading h2,
+#app-view.dark-mode #calculator-view .reference-description,
+#app-view.dark-mode #calculator-view .field label,
+#app-view.dark-mode #calculator-view .prefix,
+#app-view.dark-mode #calculator-view .suffix,
+#app-view.dark-mode #calculator-view .field .gold-price-status {color:#fff}
