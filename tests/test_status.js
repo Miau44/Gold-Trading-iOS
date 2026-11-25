@@ -30,7 +30,7 @@ async function scenario({secure=true,sw=true,persisted=false,grant=false,complet
   }
   const sandbox={
     elements,navigator:nav,window:{isSecureContext:secure},
-    caches:{async keys(){return cacheExists?['goldtrading-offline-v8']:[];},async open(name){assert.equal(name,'goldtrading-offline-v8');return {async match(url){return complete && !url.pathname.endsWith(missingFile || '__missing__')?{ok:true}:null;}}}},
+    caches:{async keys(){return cacheExists?['goldtrading-offline-v9']:[];},async open(name){assert.equal(name,'goldtrading-offline-v9');return {async match(url){return complete && !url.pathname.endsWith(missingFile || '__missing__')?{ok:true}:null;}}}},
     setTimeout:(fn,ms)=>setTimeout(fn,readyPending?0:ms),clearTimeout,
     document:{baseURI:'https://example.com/gold/'},URL,console:{info(){},warn(){}}
   };

@@ -437,7 +437,7 @@
       './images/results-gold.png', './manifest.webmanifest',
       './icons/icon-192.png', './icons/icon-512.png', './icons/apple-touch-icon.png'
     ];
-    const cacheName = 'goldtrading-offline-v8';
+    const cacheName = 'goldtrading-offline-v9';
     if (!(await caches.keys()).includes(cacheName)) {
       $('offline-status').textContent = 'Descarga inicial pendiente';
       return false;

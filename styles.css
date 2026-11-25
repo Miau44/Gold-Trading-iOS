@@ -615,6 +615,12 @@ body:has(#app-view.dark-mode:not([hidden])) {background:#171c24}
 #app-view.dark-mode .settings-card h1,
 #app-view.dark-mode .settings-card h2,
 #app-view.dark-mode .field label {color:#fff}
+#app-view.dark-mode .reference-card .eyebrow,
+#app-view.dark-mode .reference-card h2,
+#app-view.dark-mode .reference-card .reference-description,
+#app-view.dark-mode .reference-input-grid .field label,
+#app-view.dark-mode .reference-input-grid .prefix,
+#app-view.dark-mode .reference-input-grid .suffix {color:#fff}
 #app-view.dark-mode .reference-description,
 #app-view.dark-mode .settings-description,
 #app-view.dark-mode .field-help,

@@ -30,7 +30,7 @@ function observe(context){
  await page.goto(base);
  await page.waitForFunction(()=>document.querySelector('#offline-status').textContent==='Archivos preparados');
  assert.equal(await page.evaluate(async()=>{await navigator.serviceWorker.ready;return !!navigator.serviceWorker.controller;}),true);
- assert.equal(await page.evaluate(async()=>{const cache=await caches.open('goldtrading-offline-v8');return (await cache.keys()).length;}),10);
+ assert.equal(await page.evaluate(async()=>{const cache=await caches.open('goldtrading-offline-v9');return (await cache.keys()).length;}),10);
  await login(page);
  assert.equal(await page.locator('.reference-price').count(),50);
  for(const width of [320,375,393,440,480,768,956]){
