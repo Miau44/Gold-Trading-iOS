@@ -281,6 +281,12 @@
   $('logout-btn').addEventListener('click', logout);
   $('nav-calculator').addEventListener('click', () => { if (isAuthenticated) setView('calculator'); });
   $('nav-settings').addEventListener('click', () => { if (isAuthenticated) setView('settings'); });
+  $('dark-mode-toggle').addEventListener('click', () => {
+    const enabled = $('app-view').classList.toggle('dark-mode');
+    $('dark-mode-toggle').setAttribute('aria-pressed', String(enabled));
+    $('dark-mode-toggle').textContent = enabled ? 'Claro' : 'Oscuro';
+    $('dark-mode-toggle').setAttribute('aria-label', enabled ? 'Cambiar a colores claros' : 'Cambiar a colores oscuros');
+  });
 
   $('preferences-form').addEventListener('submit', event => {
     event.preventDefault();

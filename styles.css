@@ -526,12 +526,12 @@ body:has(#app-view:not([hidden])) {
 }
 #app-view .reference-price-row .reference-ley {color:#11243e;font-size:17px;font-weight:780;background:linear-gradient(120deg,#fff,#f5f8fb)}
 #app-view .reference-price-row .reference-price {
-  color:#1d1a12;
+  color:#000;
   font-size:18px;font-weight:850;letter-spacing:-.025em;
-  background:linear-gradient(90deg,#ffedb0 0%,#ffe08a 100%);
+  background:#ffcc00;
 }
 #app-view .reference-price-row.selected .reference-ley {background:#153c68;color:white}
-#app-view .reference-price-row.selected .reference-price {background:linear-gradient(90deg,#f8d15a,#f3c852)}
+#app-view .reference-price-row.selected .reference-price {background:#ffcc00;color:#000}
 #app-view .reference-price-row.invalid .reference-price{background:#eef1f6;color:#6d7480}
 #app-view .reference-price-row .reference-price {overflow:hidden;text-overflow:clip}
 /* Use smaller digits only if a very narrow display cannot fit two tables. */
@@ -594,3 +594,50 @@ html:has(#app-view:not([hidden])),body:has(#app-view:not([hidden])){overflow-x:c
   text-align:center;
   line-height:1.12;
 }
+
+/* Amarillo intenso para la tabla y alternancia de colores de la página. */
+#app-view .theme-toggle {
+  flex:0 0 auto;min-height:38px;padding:0 11px;border:1px solid #ffcc00;
+  border-radius:11px;background:#ffcc00;color:#000;font-size:12px;
+  font-weight:800;letter-spacing:0;
+}
+#app-view .theme-toggle:focus-visible {outline:3px solid #fff;outline-offset:2px}
+html:has(#app-view.dark-mode:not([hidden])) {background:#171c24}
+body:has(#app-view.dark-mode:not([hidden])) {background:#171c24}
+#app-view.dark-mode .calculator-card,
+#app-view.dark-mode .reference-card,
+#app-view.dark-mode .settings-card {
+  color:#fff;background:#252d38;border-color:#46515f;
+  box-shadow:0 8px 27px rgba(0,0,0,.22);
+}
+#app-view.dark-mode .calculator-card h1,
+#app-view.dark-mode .reference-card h2,
+#app-view.dark-mode .settings-card h1,
+#app-view.dark-mode .settings-card h2,
+#app-view.dark-mode .field label {color:#fff}
+#app-view.dark-mode .reference-description,
+#app-view.dark-mode .settings-description,
+#app-view.dark-mode .field-help,
+#app-view.dark-mode .storage-status span {color:#e2e8f0}
+#app-view.dark-mode .reference-underline {background:#ffcc00}
+#app-view.dark-mode .input-wrap {
+  background:#171c24;border-color:#657181;box-shadow:none;
+}
+#app-view.dark-mode input {color:#fff}
+#app-view.dark-mode .prefix,
+#app-view.dark-mode .suffix {color:#e2e8f0}
+#app-view.dark-mode .reference-block {background:#252d38;border-color:#657181}
+#app-view.dark-mode .reference-price-row {border-color:#46515f}
+#app-view.dark-mode .reference-price-row .reference-ley {background:#252d38;color:#fff}
+#app-view.dark-mode .reference-price-row.selected .reference-ley {background:#ffcc00;color:#000}
+#app-view.dark-mode .reference-price-row .reference-price,
+#app-view.dark-mode .reference-price-row.selected .reference-price {background:#ffcc00;color:#000}
+#app-view.dark-mode .reference-price-row.invalid .reference-price {background:#46515f;color:#fff}
+#app-view.dark-mode .tab-bar {background:#252d38;border-color:#657181;box-shadow:none}
+#app-view.dark-mode .tab.active {background:#ffcc00;color:#000;box-shadow:none}
+#app-view.dark-mode .tab:not(.active) {color:#e2e8f0}
+#app-view.dark-mode .settings-card .storage-status strong {color:#fff}
+#app-view.dark-mode .form-error {background:#542e31;color:#fff}
+#app-view.dark-mode .success-message {background:#244532;color:#fff}
+#app-view.dark-mode .reset-btn,
+#app-view.dark-mode .logout-btn {background:#46515f;color:#fff}
